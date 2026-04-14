@@ -3,385 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Terms & Conditions | LazerMarkets</title>
+    <title>Terms & Conditions | Lazer Markets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         body {
-            background: #0a0c10;
-            color: #eef2ff;
+            background: #0a0e1a;
+            color: #e0e3eb;
             min-height: 100vh;
         }
 
-        .bg-orb {
+        .bg-animation {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             z-index: 0;
+            overflow: hidden;
         }
 
-        .orb-bg {
-            width: 500px;
-            height: 500px;
-            background: #2ecc71;
-            filter: blur(120px);
-            opacity: 0.1;
+        .bg-animation .orb {
             position: absolute;
-            top: -150px;
-            right: -100px;
             border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+
+        .orb-1 { width: 500px; height: 500px; background: #0066ff; top: -200px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: #00c6fb; bottom: -150px; left: -100px; animation-delay: -5s; }
+        .orb-3 { width: 300px; height: 300px; background: #0044cc; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -10s; }
+
+        @keyframes float {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-30px) scale(1.1); }
+            66% { transform: translate(-20px,20px) scale(0.9); }
         }
 
         .container {
             position: relative;
-            z-index: 2;
-            max-width: 1200px;
+            z-index: 1;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 100px 20px 60px;
         }
 
         .terms-card {
-            background: rgba(18,22,28,0.95);
-            backdrop-filter: blur(16px);
+            background: rgba(15, 19, 34, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 32px;
-            padding: 50px;
-            border: 1px solid rgba(46,204,113,0.3);
+            padding: 45px;
+            border: 1px solid rgba(0, 102, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
-        .terms-header {
+        .terms-card h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
             text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .terms-header h1 {
-            font-size: 42px;
-            background: linear-gradient(135deg, #fff, #2ecc71);
+            background: linear-gradient(135deg, #fff, #0066ff, #00c6fb);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 15px;
-        }
-
-        .terms-header p {
-            color: #9ca3af;
-            font-size: 14px;
         }
 
         .last-updated {
-            background: rgba(46,204,113,0.1);
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            color: #2ecc71;
-            margin-top: 15px;
-        }
-
-        .section {
-            margin-bottom: 35px;
-        }
-
-        .section h2 {
-            color: #2ecc71;
-            font-size: 24px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-        }
-
-        .section h3 {
-            color: #eef2ff;
-            font-size: 18px;
-            margin: 20px 0 10px 0;
-        }
-
-        .section p {
-            color: #9ca3af;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .section ul, .section ol {
-            color: #9ca3af;
-            line-height: 1.8;
-            margin-left: 25px;
-            margin-bottom: 15px;
-        }
-
-        .section li {
-            margin-bottom: 8px;
-        }
-
-        .warning-box {
-            background: rgba(255,193,7,0.1);
-            border-left: 4px solid #ffc107;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-        }
-
-        .warning-box p {
-            margin-bottom: 0;
-            color: #ffc107;
-        }
-
-        .accept-box {
-            background: rgba(46,204,113,0.1);
-            border-radius: 16px;
-            padding: 25px;
             text-align: center;
-            margin-top: 40px;
+            color: #8a92b0;
+            margin-bottom: 30px;
+            font-size: 14px;
         }
 
-        .accept-btn {
-            background: linear-gradient(135deg, #2ecc71, #1f8a4c);
-            border: none;
-            color: #0a0c10;
-            padding: 14px 40px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: 0.3s;
+        .terms-content h2 {
+            color: #0066ff;
+            font-size: 22px;
+            margin-top: 25px;
+            margin-bottom: 15px;
         }
 
-        .accept-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 15px rgba(46,204,113,0.4);
+        .terms-content h3 {
+            color: #00c6fb;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .terms-content p {
+            color: #8a92b0;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .terms-content ul, .terms-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+            color: #8a92b0;
+            line-height: 1.8;
+        }
+
+        .terms-content li {
+            margin: 8px 0;
+        }
+
+        .terms-content strong {
+            color: #e0e3eb;
         }
 
         .back-link {
             display: inline-block;
             margin-top: 30px;
-            color: #2ecc71;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #0066ff, #00c6fb);
+            border-radius: 30px;
+            color: white;
             text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
         .back-link:hover {
-            text-decoration: underline;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,102,255,0.3);
         }
 
         hr {
-            border-color: rgba(46,204,113,0.2);
-            margin: 30px 0;
+            border-color: rgba(0,102,255,0.2);
+            margin: 20px 0;
         }
 
         @media (max-width: 768px) {
             .terms-card { padding: 25px; }
-            .terms-header h1 { font-size: 28px; }
-            .section h2 { font-size: 20px; }
+            .terms-card h1 { font-size: 28px; }
         }
     </style>
 </head>
 <body>
-<div class="bg-orb"><div class="orb-bg"></div></div>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-<div class="container">
-    <div class="terms-card">
-        <div class="terms-header">
-            <h1><i class="fas fa-gavel"></i> Terms & Conditions</h1>
-            <p>Please read these terms carefully before using LazerMarkets platform</p>
-            <div class="last-updated"><i class="fas fa-calendar-alt"></i> Last Updated: January 1, 2025</div>
-        </div>
+    <div class="container">
+        <div class="terms-card">
+            <h1><i class="fas fa-file-contract"></i> Terms & Conditions</h1>
+            <div class="last-updated">Last Updated: December 1, 2024</div>
 
-        <div class="section">
-            <h2>1. Acceptance of Terms</h2>
-            <p>By accessing or using the LazerMarkets platform ("LazerMarkets", "we", "us", "our"), you agree to be bound by these Terms & Conditions. If you do not agree to these terms, please do not use our platform.</p>
-            <p>LazerMarkets is an AI-powered trading platform that provides automated trading signals and execution services for cryptocurrencies, forex, indices, and commodities.</p>
-        </div>
+            <div class="terms-content">
+                <p>Welcome to Lazer Markets. By accessing or using our platform, you agree to be bound by these Terms and Conditions. Please read them carefully before using our services.</p>
 
-        <div class="section">
-            <h2>2. Eligibility</h2>
-            <p>To use LazerMarkets, you must:</p>
-            <ul>
-                <li>Be at least 18 years of age or the legal age of majority in your jurisdiction</li>
-                <li>Have the legal capacity to enter into binding contracts</li>
-                <li>Not be prohibited from using trading platforms under any applicable laws</li>
-                <li>Provide accurate and complete registration information</li>
-                <li>Not be a resident of any country where cryptocurrency trading is prohibited</li>
-            </ul>
-        </div>
+                <h2>1. Acceptance of Terms</h2>
+                <p>By registering for an account, accessing, or using the Lazer Markets platform (the "Platform"), you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions, our Privacy Policy, and any additional guidelines or rules applicable to specific services, which are incorporated by reference.</p>
 
-        <div class="warning-box">
-            <p><i class="fas fa-exclamation-triangle"></i> <strong>Risk Warning:</strong> Trading cryptocurrencies and other financial instruments involves substantial risk. You may lose all of your invested capital. Past performance does not guarantee future results. LazerMarkets does not guarantee profits.</p>
-        </div>
+                <h2>2. Eligibility</h2>
+                <p>To use our Platform, you must:</p>
+                <ul>
+                    <li>Be at least 18 years of age or the age of majority in your jurisdiction</li>
+                    <li>Have the legal capacity to enter into binding contracts</li>
+                    <li>Not be prohibited from using our services under any applicable laws</li>
+                    <li>Provide accurate and complete registration information</li>
+                    <li>Not be a resident of any country subject to international sanctions or embargoes</li>
+                </ul>
 
-        <div class="section">
-            <h2>3. Account Registration</h2>
-            <p>To access our services, you must create an account. You agree to:</p>
-            <ul>
-                <li>Provide accurate, current, and complete information</li>
-                <li>Maintain the security of your password and account</li>
-                <li>Notify us immediately of any unauthorized access</li>
-                <li>Accept responsibility for all activities under your account</li>
-                <li>Not share your account credentials with anyone</li>
-            </ul>
-            <p>LazerMarkets reserves the right to suspend or terminate accounts that violate these terms.</p>
-        </div>
+                <h2>3. Account Registration and Security</h2>
+                <p>You are responsible for maintaining the confidentiality of your account credentials, including your password and AI Passkey. You agree to:</p>
+                <ul>
+                    <li>Notify us immediately of any unauthorized use of your account</li>
+                    <li>Ensure you log out of your account at the end of each session</li>
+                    <li>Not share your account credentials with any third party</li>
+                    <li>Be fully responsible for all activities that occur under your account</li>
+                </ul>
 
-        <div class="section">
-            <h2>4. AI Trading Services</h2>
-            <h3>4.1 How Our AI Works</h3>
-            <p>LazerMarkets uses proprietary artificial intelligence algorithms to analyze market data and generate trading signals. Our AI system:</p>
-            <ul>
-                <li>Analyzes real-time market data from multiple sources</li>
-                <li>Generates trading signals based on technical and fundamental analysis</li>
-                <li>Executes trades automatically based on user settings</li>
-                <li>Continuously learns and adapts to market conditions</li>
-            </ul>
-            
-            <h3>4.2 Trade Execution</h3>
-            <p>When you start an AI trade:</p>
-            <ul>
-                <li>You authorize LazerMarkets to deduct the trade amount from your balance</li>
-                <li>Trades have a fixed duration (3 minutes to 1 week)</li>
-                <li>Profits are calculated at 88% of the invested amount</li>
-                <li>Profits are automatically credited to your balance upon trade completion</li>
-                <li>You may manually stop a trade at any time and receive the full 88% profit</li>
-            </ul>
+                <h2>4. AI Trading Services</h2>
+                <p>Lazer Markets provides an AI-powered trading platform that executes trades based on algorithmic analysis. You acknowledge and agree that:</p>
+                <ul>
+                    <li>All trading decisions are generated by automated AI algorithms</li>
+                    <li>Past performance does not guarantee future results</li>
+                    <li>Trading involves substantial risk of loss</li>
+                    <li>You may lose some or all of your invested capital</li>
+                    <li>We do not guarantee any specific returns or profits</li>
+                    <li>The AI system has a 70% historical win rate with 88% profit on winning trades and a maximum loss of $10 on losing trades</li>
+                </ul>
 
-            <h3>4.3 Minimum Investment</h3>
-            <p>The minimum amount for AI trading is $115 USD. This ensures optimal performance of our AI algorithms.</p>
-        </div>
+                <h2>5. Deposits and Withdrawals</h2>
+                <h3>5.1 Deposits</h3>
+                <ul>
+                    <li>Minimum deposit amount is $60 USD</li>
+                    <li>Deposits are processed via NOWPayments cryptocurrency gateway</li>
+                    <li>Deposits require admin verification before funds are credited</li>
+                    <li>Verification may take 10-30 minutes</li>
+                </ul>
 
-        <div class="section">
-            <h2>5. Deposits and Withdrawals</h2>
-            <h3>5.1 Deposits</h3>
-            <ul>
-                <li>Minimum deposit amount: $60 USD</li>
-                <li>Deposits are processed via NOWPayments cryptocurrency gateway</li>
-                <li>Supported cryptocurrencies: Bitcoin, Ethereum, USDT (TRC20/ERC20/BEP20), and more</li>
-                <li>Deposits are typically credited within 10-15 minutes after confirmation</li>
-                <li>All deposits are non-refundable once credited</li>
-            </ul>
+                <h3>5.2 Withdrawals</h3>
+                <ul>
+                    <li>Minimum withdrawal amount is $50 USD</li>
+                    <li>A 2% withdrawal fee applies to all withdrawals</li>
+                    <li>Withdrawals are processed within 24-48 hours after admin approval</li>
+                    <li>Withdrawals require email verification</li>
+                    <li>We reserve the right to request additional verification for large withdrawals</li>
+                </ul>
 
-            <h3>5.2 Withdrawals</h3>
-            <ul>
-                <li>Minimum withdrawal amount: $50 USD</li>
-                <li>A 2% processing fee applies to all withdrawals</li>
-                <li>Withdrawal requests are processed within 24-48 hours after admin approval</li>
-                <li>You must provide a valid wallet address for your chosen network</li>
-                <li>Withdrawals require email verification for security</li>
-                <li>LazerMarkets reserves the right to delay withdrawals for security review</li>
-            </ul>
-        </div>
+                <h2>6. Fees and Charges</h2>
+                <p>The following fees apply to platform services:</p>
+                <ul>
+                    <li><strong>Withdrawal Fee:</strong> 2% of withdrawal amount</li>
+                    <li><strong>AI Trading Profit:</strong> 88% of stake on winning trades (you keep 100% of profit)</li>
+                    <li><strong>Deposit Fee:</strong> No deposit fees (crypto network fees may apply)</li>
+                    <li><strong>Inactivity Fee:</strong> No inactivity fees currently</li>
+                </ul>
 
-        <div class="section">
-            <h2>6. Fees and Charges</h2>
-            <ul>
-                <li><strong>AI Trading Fee:</strong> No upfront fee. 88% profit on successful trades</li>
-                <li><strong>Withdrawal Fee:</strong> 2% of the withdrawal amount</li>
-                <li><strong>Deposit Fee:</strong> No deposit fee (network fees may apply)</li>
-                <li><strong>Inactivity Fee:</strong> None</li>
-                <li><strong>Account Maintenance Fee:</strong> None</li>
-            </ul>
-            <p>LazerMarkets reserves the right to modify fees with 14 days' notice to users.</p>
-        </div>
+                <h2>7. Risk Disclosure</h2>
+                <p>Trading cryptocurrencies and other digital assets involves significant risk. You acknowledge that:</p>
+                <ul>
+                    <li>Cryptocurrency markets are highly volatile</li>
+                    <li>Prices can fluctuate dramatically in short periods</li>
+                    <li>You may lose your entire investment</li>
+                    <li>Past performance is not indicative of future results</li>
+                    <li>You should only invest funds you can afford to lose</li>
+                    <li>We do not provide financial advice</li>
+                </ul>
 
-        <div class="section">
-            <h2>7. AI Passkey System</h2>
-            <p>To use AI trading features, you must obtain an AI Passkey:</p>
-            <ul>
-                <li>Passkeys are 12-character alphanumeric codes</li>
-                <li>Passkeys are provided by LazerMarkets administrators</li>
-                <li>You are responsible for keeping your passkey confidential</li>
-                <li>LazerMarkets may revoke passkeys for violations of terms</li>
-                <li>Lost passkeys can be regenerated by contacting support</li>
-            </ul>
-        </div>
+                <h2>8. Prohibited Activities</h2>
+                <p>You agree not to engage in any of the following prohibited activities:</p>
+                <ul>
+                    <li>Using the Platform for any illegal purpose or in violation of any laws</li>
+                    <li>Attempting to manipulate or interfere with the AI trading system</li>
+                    <li>Creating multiple accounts or using fake identities</li>
+                    <li>Attempting to bypass withdrawal limits or verification requirements</li>
+                    <li>Reverse engineering or attempting to extract source code</li>
+                    <li>Using automated scripts or bots to interact with the Platform</li>
+                    <li>Harassing, threatening, or harming other users or staff</li>
+                </ul>
 
-        <div class="section">
-            <h2>8. Prohibited Activities</h2>
-            <p>You agree NOT to:</p>
-            <ul>
-                <li>Use the platform for any illegal purpose</li>
-                <li>Attempt to hack, disrupt, or manipulate the platform</li>
-                <li>Create multiple accounts or use bots</li>
-                <li>Share your account or passkey with others</li>
-                <li>Provide false or misleading information</li>
-                <li>Engage in money laundering or fraud</li>
-                <li>Reverse engineer our AI algorithms</li>
-                <li>Use the platform in any jurisdiction where it is prohibited</li>
-            </ul>
-        </div>
+                <h2>9. Account Suspension and Termination</h2>
+                <p>We reserve the right to suspend or terminate your account immediately, without prior notice, for any violation of these Terms, including but not limited to:</p>
+                <ul>
+                    <li>Providing false or misleading information</li>
+                    <li>Engaging in fraudulent or illegal activities</li>
+                    <li>Attempting to hack or compromise platform security</li>
+                    <li>Chargeback fraud or payment disputes</li>
+                    <li>Violation of our risk management policies</li>
+                </ul>
 
-        <div class="section">
-            <h2>9. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, LazerMarkets shall not be liable for:</p>
-            <ul>
-                <li>Any financial losses incurred from trading</li>
-                <li>Loss of profits, revenue, or data</li>
-                <li>Platform downtime or technical issues</li>
-                <li>Third-party service interruptions</li>
-                <li>Unauthorized account access (unless caused by our negligence)</li>
-                <li>Market volatility or regulatory changes</li>
-            </ul>
-            <p>Our total liability shall not exceed the amount you have paid to us in the past 12 months.</p>
-        </div>
+                <h2>10. Intellectual Property</h2>
+                <p>All content on the Lazer Markets platform, including but not limited to text, graphics, logos, icons, images, audio clips, digital downloads, data compilations, and software, is the property of Lazer Markets or its content suppliers and is protected by international copyright laws. Our proprietary AI algorithms and trading systems are confidential trade secrets.</p>
 
-        <div class="section">
-            <h2>10. Termination</h2>
-            <p>LazerMarkets may terminate or suspend your account immediately, without prior notice, for conduct that violates these terms. Upon termination:</p>
-            <ul>
-                <li>Your access to the platform will be revoked</li>
-                <li>Any pending trades will be closed at current market value</li>
-                <li>Remaining balance may be withdrawn subject to standard fees</li>
-                <li>You remain liable for any obligations incurred before termination</li>
-            </ul>
-        </div>
+                <h2>11. Limitation of Liability</h2>
+                <p>To the maximum extent permitted by law, Lazer Markets and its affiliates, officers, directors, employees, and agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+                <ul>
+                    <li>Your use or inability to use the Platform</li>
+                    <li>Any unauthorized access to or use of our servers and/or any personal information stored therein</li>
+                    <li>Any interruption or cessation of transmission to or from our Platform</li>
+                    <li>Any bugs, viruses, trojan horses, or the like that may be transmitted to or through our Platform</li>
+                    <li>Any errors or omissions in any content or for any loss or damage incurred as a result of the use of any content posted, emailed, transmitted, or otherwise made available through the Platform</li>
+                </ul>
 
-        <div class="section">
-            <h2>11. Amendments</h2>
-            <p>LazerMarkets reserves the right to modify these terms at any time. We will notify users of material changes via email or platform notification. Continued use of the platform constitutes acceptance of the modified terms.</p>
-        </div>
+                <h2>12. Indemnification</h2>
+                <p>You agree to indemnify, defend, and hold harmless Lazer Markets and its officers, directors, employees, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney's fees) arising from:</p>
+                <ul>
+                    <li>Your use of and access to the Platform</li>
+                    <li>Your violation of any term of these Terms</li>
+                    <li>Your violation of any third-party right, including without limitation any copyright, property, or privacy right</li>
+                    <li>Any claim that your content caused damage to a third party</li>
+                </ul>
 
-        <div class="section">
-            <h2>12. Governing Law</h2>
-            <p>These terms shall be governed by and construed in accordance with the laws of the British Virgin Islands, without regard to conflict of law principles. Any disputes arising from these terms shall be resolved through binding arbitration.</p>
-        </div>
+                <h2>13. Modifications to Terms</h2>
+                <p>We reserve the right to modify these Terms at any time. If we make material changes to these Terms, we will notify you by email or through a notice on our Platform prior to the effective date of the changes. Your continued use of the Platform after any such changes constitutes your acceptance of the new Terms.</p>
 
-        <div class="section">
-            <h2>13. Contact Information</h2>
-            <p>For questions about these Terms & Conditions, please contact us:</p>
-            <ul>
-                <li><i class="fas fa-envelope"></i> Email: support@lazermarkets.com</li>
-                <li><i class="fas fa-headset"></i> Support: Available 24/7 via live chat</li>
-            </ul>
-        </div>
+                <h2>14. Governing Law</h2>
+                <p>These Terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Lazer Markets operates, without regard to its conflict of law provisions. Any dispute arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts in that jurisdiction.</p>
 
-        <hr>
+                <h2>15. Severability</h2>
+                <p>If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that these Terms shall otherwise remain in full force and effect and enforceable.</p>
 
-        <div class="accept-box">
-            <p><i class="fas fa-check-circle"></i> By using LazerMarkets, you acknowledge that you have read, understood, and agree to these Terms & Conditions.</p>
-            <button class="accept-btn" onclick="acceptTerms()"><i class="fas fa-check"></i> I Accept the Terms</button>
-        </div>
+                <h2>16. Entire Agreement</h2>
+                <p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and Lazer Markets regarding your use of the Platform and supersede all prior agreements and understandings, whether written or oral.</p>
 
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="register.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Registration</a>
+                <h2>17. Contact Information</h2>
+                <p>If you have any questions about these Terms, please contact us at:</p>
+                <ul>
+                    <li><strong>Email:</strong> support@lazermarkets.com</li>
+                    <li><strong>Support Hours:</strong> 24/7</li>
+                    <li><strong>Response Time:</strong> Within 24 hours</li>
+                </ul>
+
+                <hr>
+
+                <p style="text-align: center; font-size: 12px; margin-top: 30px;">By using Lazer Markets, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</p>
+            </div>
+
+            <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Go Back</a>
         </div>
     </div>
-</div>
-
-<script>
-    function acceptTerms() {
-        // Store acceptance in localStorage
-        localStorage.setItem('termsAccepted', 'true');
-        localStorage.setItem('termsAcceptedDate', new Date().toISOString());
-        
-        // Show success message
-        alert('✅ Thank you for accepting the Terms & Conditions. You can now proceed with registration.');
-        
-        // Redirect to registration page
-        window.location.href = 'register.html';
-    }
-</script>
 </body>
 </html>

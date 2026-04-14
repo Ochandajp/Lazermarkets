@@ -3,34 +3,171 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+yarn.lock
 
-# Environment variables
+# Environment Variables
 .env
 .env.local
 .env.production
+.env.development
 
 # Database
 *.db
 *.sqlite
+*.sqlite3
 
 # Logs
 logs/
 *.log
+log.txt
+error.log
+access.log
 
-# OS files
+# OS Generated Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# IDE files
+# IDE / Editor Files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-*
+workspace.xml
 
-# Build files
+# Build Output
 dist/
 build/
+out/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# Coverage
+# Testing
 coverage/
 .nyc_output/
+*.test.js
+*.spec.js
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backup Files
+*.bak
+*.backup
+*.old
+
+# Uploads
+uploads/
+images/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+
+# Certificates
+*.pem
+*.key
+*.crt
+*.cert
+
+# MongoDB
+dump/
+mongodump/
+
+# Render Deployment
+.render/
+
+# PM2
+.pm2/
+
+# Error Files
+error-screenshots/
+
+# Secrets
+*.p12
+*.pfx
+.secret
+.secrets
+
+# Environment Specific
+.env.*
+!.env.example
+
+# User Data
+data/
+user-data/
+
+# Local Development Only
+localhost/
+local-dev/
+
+# Logs from Render
+render.log
+
+# API Keys (if accidentally saved)
+api_keys.txt
+keys.json
+secrets.json
+
+# Docker (if used)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Redis
+dump.rdb
+
+# Package Manager Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+
+# Debug
+debug.log
+
+# System Files
+*.dmg
+*.iso
+*.app
+
+# Archive Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Documentation (optional - include if you don't want docs in repo)
+/docs/
+/documentation/
+
+# Test Files
+/tests/
+/__tests__/
+/test-results/
+
+# Temporary IDE files
+*.log
+*.pid
+*.seed
+*.pid.lock

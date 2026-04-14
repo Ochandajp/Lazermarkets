@@ -3,43 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Deposit Funds | LazerMarkets</title>
+    <title>Deposit Funds | Lazer Markets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #0a0a0a; color: #e0e0e0; min-height: 100vh; }
-        .bg-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0,255,0,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,0,0.02) 1px, transparent 1px); background-size: 50px 50px; z-index: 0; }
-        .container { position: relative; z-index: 1; max-width: 500px; margin: 0 auto; padding: 80px 20px 40px; }
-        .deposit-card { background: #0f0f0f; border-radius: 24px; border: 1px solid rgba(0,204,0,0.3); padding: 30px; }
-        .deposit-card h1 { font-size: 28px; margin-bottom: 10px; text-align: center; background: linear-gradient(135deg, #fff, #00cc00); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
-        .info-box { background: rgba(0,204,0,0.1); border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center; border: 1px solid rgba(0,204,0,0.2); }
-        .info-box i { font-size: 48px; color: #00cc00; margin-bottom: 15px; }
-        .info-box h3 { color: #00cc00; margin-bottom: 10px; }
-        .warning-box { background: rgba(255,68,68,0.1); border-left: 4px solid #ff4444; border-radius: 12px; padding: 15px; margin: 20px 0; }
-        .warning-box p { color: #ff4444; font-size: 13px; margin: 5px 0; }
-        .payment-button { display: flex; justify-content: center; margin: 30px 0 20px; }
-        .payment-button img { max-width: 100%; height: auto; border-radius: 12px; }
-        .back-link { display: block; text-align: center; margin-top: 20px; color: #00cc00; text-decoration: none; }
-        .instruction-list { margin: 15px 0; padding-left: 20px; }
-        .instruction-list li { margin: 8px 0; color: #888; font-size: 13px; }
-        hr { border-color: rgba(0,204,0,0.2); margin: 20px 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #0a0e1a;
+            color: #e0e3eb;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 80px 20px 40px;
+        }
+
+        .deposit-card {
+            background: #0f1322;
+            border-radius: 24px;
+            border: 1px solid rgba(0,102,255,0.3);
+            padding: 30px;
+        }
+
+        .deposit-card h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #0066ff;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8a92b0;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: rgba(0,102,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid rgba(0,102,255,0.2);
+        }
+
+        .info-box i {
+            font-size: 48px;
+            color: #0066ff;
+            margin-bottom: 15px;
+        }
+
+        .info-box h3 {
+            color: #0066ff;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #8a92b0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .warning-box p {
+            color: #ffc107;
+            font-size: 13px;
+            margin: 5px 0;
+        }
+
+        .payment-button {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0 20px;
+        }
+
+        .payment-button a {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .payment-button a:hover {
+            transform: scale(1.05);
+        }
+
+        .payment-button img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #0066ff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .instruction-list {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .instruction-list li {
+            margin: 8px 0;
+            color: #8a92b0;
+            font-size: 13px;
+        }
+
+        hr {
+            border-color: rgba(0,102,255,0.2);
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
-<div class="bg-grid"></div>
 <div class="container">
     <div class="deposit-card">
         <h1><i class="fas fa-plus-circle"></i> Deposit Funds</h1>
         <p class="subtitle">Add funds to your account to start trading</p>
-        <div class="info-box"><i class="fas fa-shield-alt"></i><h3>Secure Payment via NOWPayments</h3><p>Pay with Bitcoin, Ethereum, USDT, and many other cryptocurrencies.</p></div>
-        <div class="warning-box"><i class="fas fa-exclamation-triangle"></i><p><strong>⚠️ IMPORTANT:</strong></p><p>Use the SAME email you registered with on LazerMarkets</p><ul class="instruction-list"><li>✅ Enter your LazerMarkets account email in the payment form</li><li>✅ Enter the correct deposit amount</li><li>✅ After payment, admin will verify and credit your balance</li></ul></div>
-        <div class="payment-button"><a href="https://nowpayments.io/donation?api_key=b1530430-00df-4732-8666-cd76d36c2268" target="_blank"><img src="https://nowpayments.io/images/embeds/donation-button-black.svg" alt="Pay with Crypto"></a></div>
-        <div class="info-box"><i class="fas fa-clock"></i><h3>After Payment</h3><p>Please allow 10-15 minutes for admin verification. Your balance will be updated once confirmed.</p></div>
+
+        <div class="info-box">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Secure Payment via NOWPayments</h3>
+            <p>We use NOWPayments for secure cryptocurrency payments. You can pay with Bitcoin, Ethereum, USDT, and many other cryptocurrencies.</p>
+        </div>
+
+        <div class="warning-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p><strong>⚠️ IMPORTANT INSTRUCTIONS:</strong></p>
+            <p>Please provide ACCURATE details while making your payment:</p>
+            <ul class="instruction-list">
+                <li>✅ Use the SAME email address you used to register on Lazer Markets</li>
+                <li>✅ Enter your Lazer Markets account email in the payment form</li>
+                <li>✅ Make sure to enter the correct amount you wish to deposit</li>
+                <li>✅ After payment, your deposit will be verified by admin</li>
+                <li>✅ Once confirmed, funds will be added to your balance</li>
+            </ul>
+        </div>
+
+        <div class="payment-button">
+            <a href="https://nowpayments.io/donation?api_key=b1530430-00df-4732-8666-cd76d36c2268" target="_blank" rel="noreferrer noopener">
+                <img src="https://nowpayments.io/images/embeds/donation-button-black.svg" alt="Pay with Cryptocurrency via NOWPayments" style="width: 280px;">
+            </a>
+        </div>
+
+        <div class="info-box" style="margin-top: 10px;">
+            <i class="fas fa-clock"></i>
+            <h3>After Payment</h3>
+            <p>After completing your payment, please allow up to 10-15 minutes for admin verification. Your balance will be updated once confirmed. You will receive an email notification when your deposit is credited.</p>
+        </div>
+
         <hr>
+
+        <div class="info-box" style="background: rgba(0,0,0,0.3);">
+            <i class="fas fa-question-circle"></i>
+            <h3>Need Help?</h3>
+            <p>If you have any issues with your deposit, please contact our support team with your transaction ID and registered email address.</p>
+        </div>
+
         <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </div>
 </div>
-<script> if (!localStorage.getItem('token')) window.location.href = 'index.html'; </script>
+
+<script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (!token) {
+        window.location.href = 'index.html';
+    }
+    
+    console.log('Registered email for this account:', user.email);
+</script>
 </body>
 </html>

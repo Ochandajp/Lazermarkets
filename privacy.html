@@ -3,405 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Privacy Policy | LazerMarkets</title>
+    <title>Privacy Policy | Lazer Markets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         body {
-            background: #0a0c10;
-            color: #eef2ff;
+            background: #0a0e1a;
+            color: #e0e3eb;
             min-height: 100vh;
         }
 
-        .bg-orb {
+        .bg-animation {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             z-index: 0;
+            overflow: hidden;
         }
 
-        .orb-bg {
-            width: 500px;
-            height: 500px;
-            background: #2ecc71;
-            filter: blur(120px);
-            opacity: 0.1;
+        .bg-animation .orb {
             position: absolute;
-            top: -150px;
-            right: -100px;
             border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+
+        .orb-1 { width: 500px; height: 500px; background: #0066ff; top: -200px; right: -100px; }
+        .orb-2 { width: 400px; height: 400px; background: #00c6fb; bottom: -150px; left: -100px; animation-delay: -5s; }
+        .orb-3 { width: 300px; height: 300px; background: #0044cc; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -10s; }
+
+        @keyframes float {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-30px) scale(1.1); }
+            66% { transform: translate(-20px,20px) scale(0.9); }
         }
 
         .container {
             position: relative;
-            z-index: 2;
-            max-width: 1200px;
+            z-index: 1;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 100px 20px 60px;
         }
 
         .privacy-card {
-            background: rgba(18,22,28,0.95);
-            backdrop-filter: blur(16px);
+            background: rgba(15, 19, 34, 0.95);
+            backdrop-filter: blur(20px);
             border-radius: 32px;
-            padding: 50px;
-            border: 1px solid rgba(46,204,113,0.3);
+            padding: 45px;
+            border: 1px solid rgba(0, 102, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
-        .privacy-header {
+        .privacy-card h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
             text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .privacy-header h1 {
-            font-size: 42px;
-            background: linear-gradient(135deg, #fff, #2ecc71);
+            background: linear-gradient(135deg, #fff, #0066ff, #00c6fb);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 15px;
-        }
-
-        .privacy-header p {
-            color: #9ca3af;
-            font-size: 14px;
         }
 
         .last-updated {
-            background: rgba(46,204,113,0.1);
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            color: #2ecc71;
-            margin-top: 15px;
+            text-align: center;
+            color: #8a92b0;
+            margin-bottom: 30px;
+            font-size: 14px;
         }
 
-        .section {
-            margin-bottom: 35px;
-        }
-
-        .section h2 {
-            color: #2ecc71;
-            font-size: 24px;
+        .privacy-content h2 {
+            color: #0066ff;
+            font-size: 22px;
+            margin-top: 25px;
             margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
         }
 
-        .section h3 {
-            color: #eef2ff;
+        .privacy-content h3 {
+            color: #00c6fb;
             font-size: 18px;
-            margin: 20px 0 10px 0;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
 
-        .section p {
-            color: #9ca3af;
+        .privacy-content p {
+            color: #8a92b0;
             line-height: 1.8;
             margin-bottom: 15px;
         }
 
-        .section ul {
-            color: #9ca3af;
+        .privacy-content ul, .privacy-content ol {
+            margin: 15px 0;
+            padding-left: 30px;
+            color: #8a92b0;
             line-height: 1.8;
-            margin-left: 25px;
-            margin-bottom: 15px;
         }
 
-        .section li {
-            margin-bottom: 8px;
+        .privacy-content li {
+            margin: 8px 0;
         }
 
-        .highlight-box {
-            background: rgba(46,204,113,0.1);
-            border-left: 4px solid #2ecc71;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 25px 0;
-        }
-
-        .highlight-box p {
-            margin-bottom: 0;
-        }
-
-        .cookie-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .cookie-table th, .cookie-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-        }
-
-        .cookie-table th {
-            color: #2ecc71;
-            font-weight: 600;
+        .privacy-content strong {
+            color: #e0e3eb;
         }
 
         .back-link {
             display: inline-block;
             margin-top: 30px;
-            color: #2ecc71;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #0066ff, #00c6fb);
+            border-radius: 30px;
+            color: white;
             text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
         }
 
         .back-link:hover {
-            text-decoration: underline;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,102,255,0.3);
         }
 
         hr {
-            border-color: rgba(46,204,113,0.2);
-            margin: 30px 0;
+            border-color: rgba(0,102,255,0.2);
+            margin: 20px 0;
         }
 
         @media (max-width: 768px) {
             .privacy-card { padding: 25px; }
-            .privacy-header h1 { font-size: 28px; }
-            .section h2 { font-size: 20px; }
-            .cookie-table { font-size: 12px; }
+            .privacy-card h1 { font-size: 28px; }
         }
     </style>
 </head>
 <body>
-<div class="bg-orb"><div class="orb-bg"></div></div>
+    <div class="bg-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-<div class="container">
-    <div class="privacy-card">
-        <div class="privacy-header">
+    <div class="container">
+        <div class="privacy-card">
             <h1><i class="fas fa-shield-alt"></i> Privacy Policy</h1>
-            <p>How we collect, use, and protect your personal information</p>
-            <div class="last-updated"><i class="fas fa-calendar-alt"></i> Last Updated: January 1, 2025</div>
-        </div>
+            <div class="last-updated">Last Updated: December 1, 2024</div>
 
-        <div class="section">
-            <h2>1. Introduction</h2>
-            <p>LazerMarkets ("we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform, website, and services.</p>
-            <p>By using LazerMarkets, you consent to the data practices described in this policy. If you do not agree, please do not use our services.</p>
-        </div>
+            <div class="privacy-content">
+                <p>At Lazer Markets, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the platform.</p>
 
-        <div class="highlight-box">
-            <p><i class="fas fa-lock"></i> <strong>Our Commitment:</strong> We prioritize the security of your personal and financial information. We use bank-level encryption and never share your data with unauthorized third parties.</p>
-        </div>
+                <h2>1. Information We Collect</h2>
+                
+                <h3>1.1 Personal Information You Provide</h3>
+                <p>When you register for an account, we collect the following personal information:</p>
+                <ul>
+                    <li><strong>Identity Information:</strong> Full name, email address, age, country of residence</li>
+                    <li><strong>Contact Information:</strong> Phone number, country code</li>
+                    <li><strong>Financial Information:</strong> Employment status, source of funds, expected deposit amount</li>
+                    <li><strong>Trading Information:</strong> Trading experience level, AI Passkey</li>
+                    <li><strong>Account Credentials:</strong> Password (encrypted), account status</li>
+                </ul>
 
-        <div class="section">
-            <h2>2. Information We Collect</h2>
-            
-            <h3>2.1 Personal Information</h3>
-            <p>When you register and use LazerMarkets, we collect:</p>
-            <ul>
-                <li><strong>Identity Data:</strong> Full name, email address, age, phone number</li>
-                <li><strong>Location Data:</strong> Country of residence, IP address</li>
-                <li><strong>Financial Data:</strong> Trading experience, source of funds, expected deposit amount</li>
-                <li><strong>Account Data:</strong> Username, password (encrypted), AI Passkey</li>
-                <li><strong>Transaction Data:</strong> Deposit/withdrawal history, trade history, profit/loss records</li>
-                <li><strong>Verification Data:</strong> Email confirmation, phone verification (if applicable)</li>
-            </ul>
+                <h3>1.2 Automatically Collected Information</h3>
+                <p>When you use our platform, we automatically collect:</p>
+                <ul>
+                    <li><strong>Device Information:</strong> IP address, browser type, operating system</li>
+                    <li><strong>Usage Data:</strong> Pages visited, time spent, trading activity</li>
+                    <li><strong>Transaction Data:</strong> Deposit and withdrawal history, trade history, profit/loss records</li>
+                    <li><strong>Log Data:</strong> Server logs, error reports, access timestamps</li>
+                </ul>
 
-            <h3>2.2 Automatically Collected Information</h3>
-            <p>We automatically collect certain information when you use our platform:</p>
-            <ul>
-                <li><strong>Device Information:</strong> Browser type, operating system, device model</li>
-                <li><strong>Usage Data:</strong> Pages visited, time spent, features used</li>
-                <li><strong>IP Address:</strong> For security and geolocation purposes</li>
-                <li><strong>Cookies:</strong> Small text files stored on your device (see Section 7)</li>
-            </ul>
+                <h2>2. How We Use Your Information</h2>
+                <p>We use the information we collect for various purposes, including:</p>
+                <ul>
+                    <li><strong>Account Management:</strong> Creating and managing your account, verifying your identity</li>
+                    <li><strong>Service Delivery:</strong> Processing trades, deposits, and withdrawals</li>
+                    <li><strong>AI Trading:</strong> Operating our AI trading algorithms and passkey system</li>
+                    <li><strong>Communication:</strong> Sending important updates, transaction confirmations, and security alerts</li>
+                    <li><strong>Customer Support:</strong> Responding to your inquiries and resolving issues</li>
+                    <li><strong>Security:</strong> Detecting and preventing fraud, unauthorized access, and other security issues</li>
+                    <li><strong>Analytics:</strong> Improving our platform, analyzing usage patterns, and optimizing performance</li>
+                    <li><strong>Legal Compliance:</strong> Complying with applicable laws, regulations, and legal processes</li>
+                </ul>
 
-            <h3>2.3 Information from Third Parties</h3>
-            <p>We may receive information about you from:</p>
-            <ul>
-                <li>Payment processors (NOWPayments) for deposit confirmations</li>
-                <li>Cryptocurrency networks for transaction verification</li>
-                <li>Analytics providers (e.g., Google Analytics)</li>
-            </ul>
-        </div>
+                <h2>3. Legal Basis for Processing</h2>
+                <p>We process your personal information based on the following legal grounds:</p>
+                <ul>
+                    <li><strong>Contract Performance:</strong> To fulfill our agreement with you and provide our services</li>
+                    <li><strong>Legitimate Interests:</strong> To improve our platform, prevent fraud, and ensure security</li>
+                    <li><strong>Legal Obligations:</strong> To comply with anti-money laundering and other regulatory requirements</li>
+                    <li><strong>Consent:</strong> Where you have provided explicit consent for specific processing activities</li>
+                </ul>
 
-        <div class="section">
-            <h2>3. How We Use Your Information</h2>
-            <p>We use your information for the following purposes:</p>
-            <ul>
-                <li><strong>To Provide Services:</strong> Process trades, deposits, withdrawals, and AI trading</li>
-                <li><strong>Account Management:</strong> Create and manage your account, verify identity</li>
-                <li><strong>Customer Support:</strong> Respond to inquiries, resolve issues</li>
-                <li><strong>Security:</strong> Detect and prevent fraud, unauthorized access</li>
-                <li><strong>Compliance:</strong> Comply with legal and regulatory obligations</li>
-                <li><strong>Improvements:</strong> Analyze usage to enhance our platform and AI algorithms</li>
-                <li><strong>Communications:</strong> Send important updates, transaction confirmations</li>
-                <li><strong>Marketing:</strong> With your consent, send promotional offers (you can opt out)</li>
-            </ul>
-        </div>
+                <h2>4. Data Sharing and Disclosure</h2>
+                <p>We do not sell your personal information. We may share your information in the following circumstances:</p>
+                
+                <h3>4.1 Service Providers</h3>
+                <p>We may share your information with third-party service providers who assist us in operating our platform, such as:</p>
+                <ul>
+                    <li><strong>Payment Processors:</strong> NOWPayments for cryptocurrency deposits</li>
+                    <li><strong>Hosting Providers:</strong> Cloud infrastructure services (Render, MongoDB Atlas)</li>
+                    <li><strong>Analytics Services:</strong> To help us understand platform usage</li>
+                </ul>
 
-        <div class="section">
-            <h2>4. Legal Basis for Processing</h2>
-            <p>We process your personal information under the following legal bases:</p>
-            <ul>
-                <li><strong>Contract Performance:</strong> To fulfill our agreement with you (providing trading services)</li>
-                <li><strong>Legal Obligations:</strong> To comply with anti-money laundering (AML) and know-your-customer (KYC) requirements</li>
-                <li><strong>Legitimate Interests:</strong> To improve our services, prevent fraud, and ensure security</li>
-                <li><strong>Consent:</strong> For marketing communications (you may withdraw consent anytime)</li>
-            </ul>
-        </div>
+                <h3>4.2 Legal Requirements</h3>
+                <p>We may disclose your information if required to do so by law or in response to valid requests by public authorities (e.g., a court or government agency).</p>
 
-        <div class="section">
-            <h2>5. Data Sharing and Disclosure</h2>
-            <p>We do not sell your personal information. We may share your data in the following circumstances:</p>
-            
-            <h3>5.1 Service Providers</h3>
-            <p>We share data with trusted third parties who assist us:</p>
-            <ul>
-                <li><strong>Payment Processors:</strong> NOWPayments for deposit processing</li>
-                <li><strong>Hosting Providers:</strong> Render.com for server infrastructure</li>
-                <li><strong>Database Providers:</strong> MongoDB Atlas for data storage</li>
-                <li><strong>Analytics:</strong> Google Analytics for usage insights (anonymized)</li>
-            </ul>
+                <h3>4.3 Business Transfers</h3>
+                <p>In the event of a merger, acquisition, reorganization, or sale of assets, your information may be transferred as part of that transaction.</p>
 
-            <h3>5.2 Legal Requirements</h3>
-            <p>We may disclose your information if required by law, court order, or government regulation, including to comply with anti-money laundering laws.</p>
+                <h3>4.4 Protection of Rights</h3>
+                <p>We may disclose information to enforce our Terms and Conditions, protect our rights, privacy, safety, or property, and/or that of our affiliates, you, or others.</p>
 
-            <h3>5.3 Business Transfers</h3>
-            <p>If LazerMarkets is acquired or merges with another company, your data may be transferred as part of the transaction.</p>
-        </div>
+                <h2>5. Data Security</h2>
+                <p>We implement appropriate technical and organizational measures to protect your personal information, including:</p>
+                <ul>
+                    <li><strong>Encryption:</strong> Passwords are encrypted using bcrypt; data transmitted via TLS/SSL</li>
+                    <li><strong>Access Controls:</strong> Restricted access to personal information on a need-to-know basis</li>
+                    <li><strong>Authentication:</strong> JWT tokens for API authentication, AI Passkey for trading</li>
+                    <li><strong>Monitoring:</strong> Regular security audits and monitoring for suspicious activity</li>
+                </ul>
+                <p>However, no method of transmission over the Internet or electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.</p>
 
-        <div class="section">
-            <h2>6. Data Security</h2>
-            <p>We implement robust security measures to protect your data:</p>
-            <ul>
-                <li><strong>Encryption:</strong> All sensitive data is encrypted using AES-256</li>
-                <li><strong>Secure Connections:</strong> SSL/TLS encryption for all data transmission (HTTPS)</li>
-                <li><strong>Password Protection:</strong> Passwords are hashed using bcrypt</li>
-                <li><strong>Access Controls:</strong> Strict internal access policies</li>
-                <li><strong>Regular Audits:</strong> Security assessments and vulnerability scans</li>
-                <li><strong>Monitoring:</strong> 24/7 intrusion detection systems</li>
-            </ul>
-            <p>While we strive to protect your data, no method of transmission over the internet is 100% secure. You are responsible for keeping your account credentials confidential.</p>
-        </div>
+                <h2>6. Data Retention</h2>
+                <p>We retain your personal information for as long as your account is active or as needed to provide you with our services. We will also retain and use your information as necessary to comply with legal obligations, resolve disputes, and enforce our agreements. Typical retention periods include:</p>
+                <ul>
+                    <li><strong>Account Information:</strong> Until account closure plus 5 years for legal compliance</li>
+                    <li><strong>Transaction Data:</strong> 7 years for financial record-keeping</li>
+                    <li><strong>Trading History:</strong> Indefinitely for performance analytics</li>
+                    <li><strong>Communication Logs:</strong> 2 years from the date of communication</li>
+                </ul>
 
-        <div class="section">
-            <h2>7. Cookies and Tracking Technologies</h2>
-            <p>We use cookies and similar technologies to enhance your experience:</p>
-            
-            <table class="cookie-table">
-                <thead>
-                    <tr>
-                        <th>Cookie Type</th>
-                        <th>Purpose</th>
-                        <th>Duration</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Essential Cookies</td>
-                        <td>Required for platform functionality (login, sessions)</td>
-                        <td>Session</td>
-                    </tr>
-                    <tr>
-                        <td>Preference Cookies</td>
-                        <td>Remember your settings and preferences</td>
-                        <td>30 days</td>
-                    </tr>
-                    <tr>
-                        <td>Analytics Cookies</td>
-                        <td>Track usage to improve our platform</td>
-                        <td>Permanent</td>
-                    </tr>
-                    <tr>
-                        <td>Security Cookies</td>
-                        <td>Prevent fraud and authenticate users</td>
-                        <td>Session</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p>You can control cookies through your browser settings. Disabling cookies may affect platform functionality.</p>
-        </div>
+                <h2>7. Your Rights and Choices</h2>
+                <p>Depending on your jurisdiction, you may have the following rights regarding your personal information:</p>
+                <ul>
+                    <li><strong>Access:</strong> Request a copy of the personal information we hold about you</li>
+                    <li><strong>Rectification:</strong> Request correction of inaccurate or incomplete information</li>
+                    <li><strong>Deletion:</strong> Request deletion of your personal information (subject to legal obligations)</li>
+                    <li><strong>Restriction:</strong> Request restriction of processing of your personal information</li>
+                    <li><strong>Portability:</strong> Request transfer of your data to another controller</li>
+                    <li><strong>Objection:</strong> Object to processing based on legitimate interests</li>
+                    <li><strong>Withdraw Consent:</strong> Withdraw consent at any time where we rely on consent to process</li>
+                </ul>
+                <p>To exercise these rights, please contact us at support@lazermarkets.com. We will respond to your request within 30 days.</p>
 
-        <div class="section">
-            <h2>8. Data Retention</h2>
-            <p>We retain your personal information for as long as necessary to:</p>
-            <ul>
-                <li>Provide our services and maintain your account</li>
-                <li>Comply with legal obligations (typically 5-7 years for financial records)</li>
-                <li>Resolve disputes and enforce agreements</li>
-                <li>Improve our AI algorithms (anonymized data)</li>
-            </ul>
-            <p>After account closure, we may retain anonymized data for analytical purposes.</p>
-        </div>
+                <h2>8. Cookies and Tracking Technologies</h2>
+                <p>We use cookies and similar tracking technologies to track activity on our platform and hold certain information. Cookies are files with a small amount of data that may include an anonymous unique identifier. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our platform.</p>
 
-        <div class="section">
-            <h2>9. Your Rights and Choices</h2>
-            <p>Depending on your jurisdiction, you may have the following rights:</p>
-            <ul>
-                <li><strong>Access:</strong> Request a copy of your personal data</li>
-                <li><strong>Correction:</strong> Update inaccurate or incomplete information</li>
-                <li><strong>Deletion:</strong> Request deletion of your data (subject to legal requirements)</li>
-                <li><strong>Restriction:</strong> Limit how we use your data</li>
-                <li><strong>Portability:</strong> Receive your data in a machine-readable format</li>
-                <li><strong>Objection:</strong> Opt out of certain processing (e.g., marketing)</li>
-                <li><strong>Withdraw Consent:</strong> For marketing communications</li>
-            </ul>
-            <p>To exercise these rights, contact us at <strong>privacy@lazermarkets.com</strong>. We will respond within 30 days.</p>
-        </div>
+                <h2>9. Third-Party Links</h2>
+                <p>Our platform may contain links to third-party websites or services that are not owned or controlled by us. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party websites or services. We strongly advise you to read the terms and conditions and privacy policy of any third-party website you visit.</p>
 
-        <div class="section">
-            <h2>10. International Data Transfers</h2>
-            <p>LazerMarkets operates globally. Your data may be transferred to and processed in countries outside your residence. We ensure appropriate safeguards are in place, including:</p>
-            <ul>
-                <li>Standard Contractual Clauses (SCCs) for data transfers</li>
-                <li>Data processing agreements with service providers</li>
-                <li>Compliance with GDPR and other applicable laws</li>
-            </ul>
-        </div>
+                <h2>10. International Data Transfers</h2>
+                <p>Your information, including personal data, may be transferred to and maintained on computers located outside of your state, province, country, or other governmental jurisdiction where data protection laws may differ from those in your jurisdiction. If you are located outside our primary jurisdiction and choose to provide information to us, please note that we transfer the data to our servers and process it there. Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.</p>
 
-        <div class="section">
-            <h2>11. Children's Privacy</h2>
-            <p>LazerMarkets is not intended for individuals under 18 years of age. We do not knowingly collect information from minors. If we discover we have collected data from a minor, we will delete it immediately.</p>
-        </div>
+                <h2>11. Children's Privacy</h2>
+                <p>Our platform is not intended for individuals under the age of 18. We do not knowingly collect personal information from anyone under 18 years of age. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us. If we become aware that we have collected personal information from a child under age 18 without verification of parental consent, we take steps to remove that information from our servers.</p>
 
-        <div class="section">
-            <h2>12. Third-Party Links</h2>
-            <p>Our platform may contain links to third-party websites (e.g., NOWPayments). We are not responsible for their privacy practices. Please review their policies before providing information.</p>
-        </div>
+                <h2>12. California Privacy Rights</h2>
+                <p>If you are a California resident, you have specific rights under the California Consumer Privacy Act (CCPA). These include the right to request disclosure of the categories and specific pieces of personal information we have collected, the right to request deletion of personal information, and the right to opt-out of the sale of personal information (we do not sell personal information). To exercise these rights, please contact us at support@lazermarkets.com.</p>
 
-        <div class="section">
-            <h2>13. Updates to This Privacy Policy</h2>
-            <p>We may update this Privacy Policy periodically. We will notify users of material changes via:</p>
-            <ul>
-                <li>Email notification to your registered address</li>
-                <li>Platform notification upon login</li>
-                <li>Updating the "Last Updated" date above</li>
-            </ul>
-            <p>Continued use of LazerMarkets after changes constitutes acceptance of the revised policy.</p>
-        </div>
+                <h2>13. GDPR Rights (for EU Residents)</h2>
+                <p>If you are a resident of the European Economic Area (EEA), you have certain data protection rights under the General Data Protection Regulation (GDPR). Lazer Markets aims to take reasonable steps to allow you to correct, amend, delete, or limit the use of your personal data. If you wish to be informed about what personal data we hold about you and if you want it to be removed from our systems, please contact us.</p>
 
-        <div class="section">
-            <h2>14. Contact Us</h2>
-            <p>If you have questions about this Privacy Policy or your data, please contact us:</p>
-            <ul>
-                <li><i class="fas fa-envelope"></i> <strong>Privacy Officer:</strong> privacy@lazermarkets.com</li>
-                <li><i class="fas fa-headset"></i> <strong>Support:</strong> support@lazermarkets.com</li>
-                <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> LazerMarkets, Road Town, Tortola, British Virgin Islands</li>
-            </ul>
-        </div>
+                <h2>14. Changes to This Privacy Policy</h2>
+                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
 
-        <hr>
+                <h2>15. Contact Us</h2>
+                <p>If you have any questions about this Privacy Policy or our data practices, please contact us at:</p>
+                <ul>
+                    <li><strong>Email:</strong> privacy@lazermarkets.com</li>
+                    <li><strong>Support Email:</strong> support@lazermarkets.com</li>
+                    <li><strong>Response Time:</strong> Within 48 hours</li>
+                </ul>
 
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="register.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Registration</a>
+                <hr>
+
+                <p style="text-align: center; font-size: 12px; margin-top: 30px;">By using Lazer Markets, you consent to the collection and use of your information as described in this Privacy Policy.</p>
+            </div>
+
+            <a href="javascript:history.back()" class="back-link"><i class="fas fa-arrow-left"></i> Go Back</a>
         </div>
     </div>
-</div>
-
-<script>
-    // Track that user has viewed the privacy policy
-    localStorage.setItem('privacyViewed', 'true');
-</script>
 </body>
 </html>
