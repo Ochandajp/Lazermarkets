@@ -20,7 +20,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// MongoDB Connection - UPDATED for Lazer Markets
+// MongoDB Connection - Lazer Markets
 const MONGODB_URI = 'mongodb+srv://Lazermarkets:Shaku@cluster0.llhd1bp.mongodb.net/lazermarkets?retryWrites=true&w=majority';
 
 mongoose.connect(MONGODB_URI)
@@ -310,7 +310,7 @@ function analyzeMarket(symbol, currentPrice, change24h, volume, volatility) {
     return analysis;
 }
 
-// ============= UPDATE ACTIVE TRADES - ONLY WHEN TIME EXPIRES =============
+// ============= UPDATE ACTIVE TRADES - 80% WIN RATE, 88% PROFIT, $10 LOSS =============
 async function updateActiveTrades() {
     const activeTrades = await Trade.find({ status: 'active' });
     const now = Date.now();
@@ -335,13 +335,17 @@ async function updateActiveTrades() {
         if (elapsed >= trade.durationMs) {
             console.log(`Trade completed after ${elapsed}ms (duration: ${trade.durationMs}ms)`);
             
-            const isWin = Math.random() < 0.7;
+            // 80% WIN RATE, 20% LOSS RATE
+            const randomValue = Math.random();
+            const isWin = randomValue < 0.8; // 80% chance to win
             
             let profit = 0;
             if (isWin) {
-                profit = trade.amount * 0.88;
+                profit = trade.amount * 0.88; // 88% profit on win
+                console.log(`✅ WINNING TRADE: +$${profit.toFixed(2)} (${(profit/trade.amount*100).toFixed(0)}% profit)`);
             } else {
-                profit = -10;
+                profit = -10; // Maximum $10 loss on loss
+                console.log(`❌ LOSING TRADE: -$${Math.abs(profit).toFixed(2)} (max loss $10)`);
             }
             
             trade.profit = profit;
@@ -382,6 +386,7 @@ async function updateActiveTrades() {
     }
 }
 
+// Run every 5 seconds to check for completed trades
 setInterval(updateActiveTrades, 5000);
 
 // ============= AI START TRADE =============
@@ -847,6 +852,7 @@ app.listen(PORT, async () => {
     console.log(`🚀 Lazer Markets Server running on http://localhost:${PORT}`);
     console.log(`✅ CORS enabled for all origins`);
     console.log(`📱 Backend API available at: https://lazermarkets.onrender.com`);
-    console.log(`💰 AI Profit set to 88% of stake`);
+    console.log(`💰 AI Profit: 88% of stake on WIN (80% win rate)`);
+    console.log(`⚠️ AI Loss: Maximum $10 loss on LOSS (20% loss rate)`);
     console.log(`⏱️ Trades ONLY complete when duration time has fully elapsed`);
 });
