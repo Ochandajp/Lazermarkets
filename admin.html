@@ -159,7 +159,7 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -224,7 +224,7 @@
             max-height: 300px;
         }
 
-        .users-section, .withdrawals-section, .transactions-section, .support-section {
+        .users-section, .withdrawals-section, .transactions-section, .support-section, .deposits-section {
             background: rgba(15,19,34,0.9);
             border-radius: 20px;
             border: 1px solid rgba(0,102,255,0.2);
@@ -244,6 +244,7 @@
         .search-filter {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .search-box {
@@ -314,6 +315,11 @@
             color: #ffc107;
         }
 
+        .status-completed {
+            background: rgba(0,212,170,0.2);
+            color: #00d4aa;
+        }
+
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -331,8 +337,8 @@
         }
 
         .action-btn.approve {
-            background: #0066ff;
-            color: #fff;
+            background: #00d4aa;
+            color: #0a0e1a;
         }
 
         .action-btn.reject {
@@ -499,6 +505,16 @@
             color: #ff6b6b;
         }
 
+        .wallet-address-display {
+            background: #1a1f30;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 11px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+
         @media (max-width: 1024px) {
             .sidebar { width: 80px; }
             .sidebar .logo-text, .sidebar .admin-badge, .sidebar .nav-item span { display: none; }
@@ -527,10 +543,11 @@
             </div>
             <div class="nav-menu">
                 <div class="nav-item active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></div>
-                <div class="nav-item" data-section="users"><i class="fas fa-users"></i> <span>Users Management</span></div>
+                <div class="nav-item" data-section="deposits"><i class="fas fa-plus-circle"></i> <span>Deposits</span></div>
+                <div class="nav-item" data-section="users"><i class="fas fa-users"></i> <span>Users</span></div>
                 <div class="nav-item" data-section="withdrawals"><i class="fas fa-money-bill-wave"></i> <span>Withdrawals</span></div>
                 <div class="nav-item" data-section="transactions"><i class="fas fa-history"></i> <span>Transactions</span></div>
-                <div class="nav-item" data-section="support"><i class="fas fa-headset"></i> <span>Support Tickets</span></div>
+                <div class="nav-item" data-section="support"><i class="fas fa-headset"></i> <span>Support</span></div>
             </div>
         </div>
 
@@ -549,7 +566,7 @@
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-users"></i></div>
                         <div class="stat-value" id="totalUsers">0</div>
-                        <div class="stat-label">Total Registered Users</div>
+                        <div class="stat-label">Total Users</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-user-check"></i></div>
@@ -559,12 +576,22 @@
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
                         <div class="stat-value" id="totalBalance">$0</div>
-                        <div class="stat-label">Total Platform Balance</div>
+                        <div class="stat-label">Platform Balance</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
                         <div class="stat-value" id="totalProfit">$0</div>
-                        <div class="stat-label">Total User Profit</div>
+                        <div class="stat-label">Total Profit</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-value" id="pendingDeposits">0</div>
+                        <div class="stat-label">Pending Deposits</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-spinner"></i></div>
+                        <div class="stat-value" id="pendingWithdrawals">0</div>
+                        <div class="stat-label">Pending Withdrawals</div>
                     </div>
                 </div>
                 <div class="charts-row">
@@ -573,8 +600,43 @@
                         <canvas id="userGrowthChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h3><i class="fas fa-chart-pie"></i> Trading Experience Distribution</h3>
+                        <h3><i class="fas fa-chart-pie"></i> Experience Distribution</h3>
                         <canvas id="experienceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deposits Section -->
+            <div id="depositsSection" style="display: none;">
+                <div class="users-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-plus-circle"></i> Deposit Requests</h3>
+                        <div class="search-filter">
+                            <select class="filter-select" id="depositFilter" onchange="loadAllDeposits()">
+                                <option value="pending">Pending Only</option>
+                                <option value="all">All Deposits</option>
+                                <option value="completed">Approved</option>
+                                <option value="failed">Rejected</option>
+                            </select>
+                            <button class="action-btn add" onclick="loadAllDeposits()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <div class="users-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Deposit ID</th>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depositsList">
+                                <tr><td colspan="6"><div class="loading">Loading deposits...</div></td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -591,7 +653,7 @@
                                 <option value="active">Active Only</option>
                                 <option value="inactive">Inactive Only</option>
                             </select>
-                            <button class="action-btn add" onclick="refreshUsers()" style="padding: 10px 18px;"><i class="fas fa-sync-alt"></i> Refresh</button>
+                            <button class="action-btn add" onclick="refreshUsers()"><i class="fas fa-sync-alt"></i> Refresh</button>
                         </div>
                     </div>
                     <div class="users-table">
@@ -620,7 +682,7 @@
                 <div class="users-section">
                     <div class="section-header">
                         <h3><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</h3>
-                        <button class="action-btn add" onclick="refreshWithdrawals()" style="padding: 10px 18px;"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <button class="action-btn add" onclick="refreshWithdrawals()"><i class="fas fa-sync-alt"></i> Refresh</button>
                     </div>
                     <div class="users-table">
                         <table>
@@ -648,8 +710,8 @@
             <div id="transactionsSection" style="display: none;">
                 <div class="users-section">
                     <div class="section-header">
-                        <h3><i class="fas fa-history"></i> Recent Transactions</h3>
-                        <button class="action-btn add" onclick="refreshTransactions()" style="padding: 10px 18px;"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <h3><i class="fas fa-history"></i> Transaction History</h3>
+                        <button class="action-btn add" onclick="refreshTransactions()"><i class="fas fa-sync-alt"></i> Refresh</button>
                     </div>
                     <div class="users-table">
                         <table>
@@ -672,12 +734,12 @@
                 </div>
             </div>
 
-            <!-- Support Tickets Section -->
+            <!-- Support Section -->
             <div id="supportSection" style="display: none;">
                 <div class="users-section">
                     <div class="section-header">
                         <h3><i class="fas fa-headset"></i> Support Tickets</h3>
-                        <button class="action-btn add" onclick="loadSupportTickets()" style="padding: 10px 18px;"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        <button class="action-btn add" onclick="loadSupportTickets()"><i class="fas fa-sync-alt"></i> Refresh</button>
                     </div>
                     <div class="users-table">
                         <table>
@@ -713,7 +775,7 @@
                 <option value="add">✅ Add Funds (Deposit)</option>
                 <option value="deduct">➖ Deduct Funds</option>
             </select>
-            <textarea id="balanceDesc" placeholder="Description / Reason (e.g., Deposit confirmed)" rows="3"></textarea>
+            <textarea id="balanceDesc" placeholder="Description / Reason" rows="3"></textarea>
             <div class="modal-buttons">
                 <button onclick="processBalance()">Process Transaction</button>
                 <button onclick="closeModal('balanceModal')">Cancel</button>
@@ -737,9 +799,24 @@
             <h3><i class="fas fa-key"></i> AI Passkey Management</h3>
             <div id="passkeyModalContent"></div>
             <div class="modal-buttons">
-                <button onclick="generatePasskey()">Generate New 12-Digit Passkey</button>
+                <button onclick="generatePasskey()">Generate New Passkey</button>
                 <button onclick="deletePasskey()">Delete Passkey</button>
                 <button onclick="closeModal('passkeyModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Action Modal -->
+    <div id="depositActionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('depositActionModal')">&times;</span>
+            <h3 id="depositActionTitle">Process Deposit</h3>
+            <div id="depositActionInfo"></div>
+            <textarea id="depositReason" rows="3" placeholder="Reason (for rejection)" style="width:100%; padding:12px; background:#1a1f30; border:1px solid #2d3748; border-radius:10px; color:white;"></textarea>
+            <div class="modal-buttons">
+                <button onclick="approveDeposit()" style="background:#00d4aa;">✓ Approve Deposit</button>
+                <button onclick="rejectDeposit()" style="background:#ff6b6b;">✗ Reject Deposit</button>
+                <button onclick="closeModal('depositActionModal')">Cancel</button>
             </div>
         </div>
     </div>
@@ -772,6 +849,7 @@
         let currentUsers = [];
         let currentPasskeyUserId = null;
         let currentReplyUserId = null;
+        let currentDepositId = null;
         let userGrowthChart, experienceChart;
 
         // Navigation
@@ -782,6 +860,7 @@
                 const section = item.dataset.section;
                 
                 document.getElementById('dashboardSection').style.display = section === 'dashboard' ? 'block' : 'none';
+                document.getElementById('depositsSection').style.display = section === 'deposits' ? 'block' : 'none';
                 document.getElementById('usersSection').style.display = section === 'users' ? 'block' : 'none';
                 document.getElementById('withdrawalsSection').style.display = section === 'withdrawals' ? 'block' : 'none';
                 document.getElementById('transactionsSection').style.display = section === 'transactions' ? 'block' : 'none';
@@ -789,6 +868,7 @@
                 
                 const titles = { 
                     dashboard: 'Dashboard Overview', 
+                    deposits: 'Deposit Requests',
                     users: 'Users Management', 
                     withdrawals: 'Withdrawal Requests', 
                     transactions: 'Transaction History', 
@@ -800,6 +880,7 @@
                 if (section === 'withdrawals') loadWithdrawals();
                 if (section === 'transactions') loadTransactions();
                 if (section === 'support') loadSupportTickets();
+                if (section === 'deposits') loadAllDeposits();
             });
         });
 
@@ -815,6 +896,8 @@
                 document.getElementById('activeUsers').innerText = stats.activeUsers || 0;
                 document.getElementById('totalBalance').innerHTML = `$${(stats.totalBalance || 0).toLocaleString()}`;
                 document.getElementById('totalProfit').innerHTML = `$${(stats.totalProfit || 0).toLocaleString()}`;
+                document.getElementById('pendingDeposits').innerText = stats.pendingDeposits || 0;
+                document.getElementById('pendingWithdrawals').innerText = stats.pendingWithdrawals || 0;
                 
                 const usersResponse = await fetch(`${API_URL}/api/admin/users`, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -881,7 +964,133 @@
             });
         }
 
-        // Users Management
+        // ============= DEPOSITS MANAGEMENT =============
+        
+        async function loadAllDeposits() {
+            const filter = document.getElementById('depositFilter')?.value || 'pending';
+            try {
+                const response = await fetch(`${API_URL}/api/admin/deposits/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                let deposits = await response.json();
+                
+                if (filter !== 'all') {
+                    deposits = deposits.filter(d => d.status === filter);
+                }
+                renderDepositsTable(deposits);
+            } catch (error) {
+                document.getElementById('depositsList').innerHTML = '<tr><td colspan="6">Error loading deposits</td></tr>';
+            }
+        }
+
+        function renderDepositsTable(deposits) {
+            const tbody = document.getElementById('depositsList');
+            if (!deposits || deposits.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px;">No deposits found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = deposits.map(d => {
+                let statusClass = '';
+                let statusText = d.status;
+                if (d.status === 'pending') { statusClass = 'status-pending'; statusText = 'Pending'; }
+                else if (d.status === 'completed') { statusClass = 'status-completed'; statusText = 'Approved'; }
+                else { statusClass = 'status-inactive'; statusText = 'Rejected'; }
+                
+                return `
+                    <tr>
+                        <td><small>${d.transactionId}</small></td>
+                        <td><strong>${escapeHtml(d.userName)}</strong></td>
+                        <td><strong style="color:#0066ff">$${d.amount.toLocaleString()}</strong></td>
+                        <td><small>${new Date(d.createdAt).toLocaleString()}</small></td>
+                        <td><span class="user-status ${statusClass}">${statusText}</span></td>
+                        <td class="action-buttons">
+                            ${d.status === 'pending' ? `
+                                <button class="action-btn approve" onclick="openDepositActionModal('${d.transactionId}', '${escapeHtml(d.userName)}', ${d.amount})"><i class="fas fa-check"></i> Approve</button>
+                                <button class="action-btn reject" onclick="openDepositActionModal('${d.transactionId}', '${escapeHtml(d.userName)}', ${d.amount})"><i class="fas fa-times"></i> Reject</button>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openDepositActionModal(depositId, userName, amount) {
+            currentDepositId = depositId;
+            document.getElementById('depositActionTitle').innerHTML = `Process Deposit - ${userName}`;
+            document.getElementById('depositActionInfo').innerHTML = `
+                <p><strong>User:</strong> ${escapeHtml(userName)}</p>
+                <p><strong>Amount:</strong> <span style="color:#0066ff; font-size:20px;">$${amount.toLocaleString()}</span></p>
+                <p><strong>Deposit ID:</strong> ${depositId}</p>
+                <div class="wallet-address-display">
+                    <strong>Send to one of these addresses:</strong><br>
+                    BTC: bc1q8njp7rj97wz70n98kuw87xxz5m609gsnxl7pvvstsc2tr5u4lghqjfuhsh<br>
+                    USDT (TRC20): TM6h1km6skigCD5wa1fpcRp7zKaJyvjYo1<br>
+                    ETH (ERC20): 0xb06ec5fb4babd796e8a15917238c045b71e48ad2
+                </div>
+            `;
+            document.getElementById('depositReason').value = '';
+            document.getElementById('depositActionModal').classList.add('active');
+        }
+
+        async function approveDeposit() {
+            if (!currentDepositId) return;
+            if (!confirm('Approve this deposit? The user\'s balance will be increased.')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/deposits/approve/${currentDepositId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(data.message);
+                    closeModal('depositActionModal');
+                    loadAllDeposits();
+                    loadDashboardStats();
+                    loadTransactions();
+                } else {
+                    showToast(data.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error approving deposit', 'error');
+            }
+        }
+
+        async function rejectDeposit() {
+            if (!currentDepositId) return;
+            const reason = document.getElementById('depositReason').value;
+            if (!confirm('Reject this deposit? This action cannot be undone.')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/deposits/reject/${currentDepositId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ reason })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Deposit rejected');
+                    closeModal('depositActionModal');
+                    loadAllDeposits();
+                } else {
+                    showToast(data.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error rejecting deposit', 'error');
+            }
+        }
+
+        // ============= USERS MANAGEMENT =============
+        
         async function loadUsers() {
             try {
                 const response = await fetch(`${API_URL}/api/admin/users`, {
@@ -922,14 +1131,15 @@
                         <button class="action-btn add" onclick="openBalanceModal('${user._id}', '${escapeHtml(user.fullName)}', 'add')"><i class="fas fa-plus"></i> Add</button>
                         <button class="action-btn deduct" onclick="openBalanceModal('${user._id}', '${escapeHtml(user.fullName)}', 'deduct')"><i class="fas fa-minus"></i> Deduct</button>
                         <button class="action-btn passkey" onclick="openPasskeyModal('${user._id}', '${escapeHtml(user.fullName)}')"><i class="fas fa-key"></i> Passkey</button>
-                        <button class="action-btn toggle" onclick="toggleUserStatus('${user._id}', ${!user.isActive})"><i class="fas fa-power-off"></i> ${user.isActive ? 'Disable' : 'Enable'}</button>
+                        <button class="action-btn toggle" onclick="toggleUserStatus('${user._id}')"><i class="fas fa-power-off"></i> ${user.isActive ? 'Disable' : 'Enable'}</button>
                         <button class="action-btn view" onclick="viewUserDetails('${user._id}')"><i class="fas fa-eye"></i> View</button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // Withdrawals
+        // ============= WITHDRAWALS MANAGEMENT =============
+        
         async function loadWithdrawals() {
             try {
                 const response = await fetch(`${API_URL}/api/admin/withdrawals`, {
@@ -950,7 +1160,7 @@
                         <td>$${(w.feeAmount || 0).toFixed(2)}</td>
                         <td>${w.network}</td>
                         <td><small>${w.walletAddress.substring(0, 15)}...</small></td>
-                        <td><span class="user-status ${w.status === 'pending' ? 'status-pending' : w.status === 'approved' ? 'status-active' : 'status-inactive'}">${w.status}</span></td>
+                        <td><span class="user-status ${w.status === 'pending' ? 'status-pending' : w.status === 'approved' ? 'status-completed' : 'status-inactive'}">${w.status}</span></td>
                         <td><small>${new Date(w.createdAt).toLocaleString()}</small></td>
                         <td class="action-buttons">
                             ${w.status === 'pending' ? `
@@ -979,13 +1189,15 @@
                     showToast(`Withdrawal ${status}!`);
                     loadWithdrawals();
                     loadDashboardStats();
+                    loadTransactions();
                 }
             } catch (error) {
                 showToast('Error processing withdrawal', 'error');
             }
         }
 
-        // Transactions
+        // ============= TRANSACTIONS =============
+        
         async function loadTransactions() {
             try {
                 const response = await fetch(`${API_URL}/api/admin/transactions`, {
@@ -995,7 +1207,7 @@
                 const tbody = document.getElementById('transactionsList');
                 
                 if (transactions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">No transactions found</tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">No transactions found</td></tr>';
                     return;
                 }
                 
@@ -1003,7 +1215,7 @@
                     <tr>
                         <td><small>${t.transactionId}</small></td>
                         <td>${escapeHtml(t.userName)}</td>
-                        <td><span style="color: ${t.type === 'admin_deposit' ? '#0066ff' : t.type === 'admin_deduct' ? '#ffc107' : '#00c6fb'}">${t.type.replace('_', ' ').toUpperCase()}</span></td>
+                        <td><span style="color: ${t.type === 'admin_deposit' ? '#0066ff' : t.type === 'admin_deduct' ? '#ffc107' : '#00d4aa'}">${t.type.replace('_', ' ').toUpperCase()}</span></td>
                         <td><strong>$${t.amount.toLocaleString()}</strong></td>
                         <td>${t.withdrawalFee ? `$${t.withdrawalFee.toFixed(2)}` : '-'}</td>
                         <td><small>${t.adminName || 'System'}</small></td>
@@ -1011,11 +1223,12 @@
                     </tr>
                 `).join('');
             } catch (error) {
-                document.getElementById('transactionsList').innerHTML = '<tr><td colspan="7">Error loading transactions</tr>';
+                document.getElementById('transactionsList').innerHTML = '<tr><td colspan="7">Error loading transactions</td></tr>';
             }
         }
 
-        // Support Tickets
+        // ============= SUPPORT TICKETS =============
+        
         async function loadSupportTickets() {
             try {
                 const response = await fetch(`${API_URL}/api/admin/support/tickets`, {
@@ -1025,7 +1238,7 @@
                 const tbody = document.getElementById('supportTicketsList');
                 
                 if (tickets.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px;">No support tickets</tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px;">No support tickets</td></tr>';
                     return;
                 }
                 
@@ -1034,7 +1247,7 @@
                         <td><strong>${escapeHtml(ticket.userName)}</strong></td>
                         <td>${escapeHtml(ticket.userEmail)}</td>
                         <td><small>${escapeHtml(ticket.lastMessage?.substring(0, 50))}...</small><br><small style="color:#8a92b0">${new Date(ticket.lastMessageTime).toLocaleString()}</small></td>
-                        <td><span class="user-status ${ticket.status === 'open' ? 'status-pending' : 'status-active'}">${ticket.status}</span></td>
+                        <td><span class="user-status ${ticket.status === 'open' ? 'status-pending' : 'status-completed'}">${ticket.status}</span></td>
                         <td>${ticket.unreadCount > 0 ? `<span style="background:#ff6b6b; padding:2px 8px; border-radius:12px; color:white;">${ticket.unreadCount}</span>` : '-'}</td>
                         <td class="action-buttons">
                             <button class="action-btn reply" onclick="openReplyModal('${ticket._id}', '${escapeHtml(ticket.userName)}', '${escapeHtml(ticket.userEmail)}')"><i class="fas fa-reply"></i> Reply</button>
@@ -1042,7 +1255,7 @@
                     </tr>
                 `).join('');
             } catch (error) {
-                document.getElementById('supportTicketsList').innerHTML = '<tr><td colspan="6">Error loading tickets</tr>';
+                document.getElementById('supportTicketsList').innerHTML = '<tr><td colspan="6">Error loading tickets</td></tr>';
             }
         }
 
@@ -1059,7 +1272,7 @@
                 
                 const historyDiv = document.getElementById('conversationHistory');
                 historyDiv.innerHTML = messages.map(msg => `
-                    <div class="conversation-message ${msg.isFromUser ? 'message-user' : 'message-support'}" style="margin-bottom: 10px; padding: 8px; border-radius: 8px; background: ${msg.isFromUser ? 'rgba(0,102,255,0.1)' : 'rgba(0,212,170,0.1)'};">
+                    <div class="conversation-message" style="margin-bottom: 10px; padding: 8px; border-radius: 8px; background: ${msg.isFromUser ? 'rgba(0,102,255,0.1)' : 'rgba(0,212,170,0.1)'};">
                         <strong>${msg.isFromUser ? msg.userName : 'Support Team'}:</strong>
                         <p style="margin-top: 5px; font-size: 13px;">${escapeHtml(msg.message)}</p>
                         <small style="color: #8a92b0;">${new Date(msg.createdAt).toLocaleString()}</small>
@@ -1126,7 +1339,8 @@
             }
         }
 
-        // Refresh functions
+        // ============= COMMON FUNCTIONS =============
+        
         function refreshUsers() { loadUsers(); showToast('Users refreshed'); }
         function refreshWithdrawals() { loadWithdrawals(); showToast('Withdrawals refreshed'); }
         function refreshTransactions() { loadTransactions(); showToast('Transactions refreshed'); }
@@ -1177,7 +1391,7 @@
             }
         }
 
-        async function toggleUserStatus(userId, newStatus) {
+        async function toggleUserStatus(userId) {
             try {
                 const response = await fetch(`${API_URL}/api/admin/users/${userId}/toggle-status`, {
                     method: 'PUT',
@@ -1240,7 +1454,7 @@
 
         async function deletePasskey() {
             if (!currentPasskeyUserId) return;
-            if (!confirm('Are you sure you want to delete this user\'s passkey? They will no longer be able to use AI trading.')) return;
+            if (!confirm('Are you sure you want to delete this user\'s passkey?')) return;
             try {
                 const response = await fetch(`${API_URL}/api/admin/delete-passkey/${currentPasskeyUserId}`, {
                     method: 'DELETE',
@@ -1343,6 +1557,7 @@
         // Auto refresh every 30 seconds
         setInterval(() => {
             if (document.getElementById('dashboardSection').style.display !== 'none') loadDashboardStats();
+            if (document.getElementById('depositsSection').style.display !== 'none') loadAllDeposits();
             if (document.getElementById('usersSection').style.display !== 'none') loadUsers();
             if (document.getElementById('withdrawalsSection').style.display !== 'none') loadWithdrawals();
             if (document.getElementById('transactionsSection').style.display !== 'none') loadTransactions();
@@ -1355,6 +1570,7 @@
         loadWithdrawals();
         loadTransactions();
         loadSupportTickets();
+        loadAllDeposits();
     </script>
 </body>
 </html>

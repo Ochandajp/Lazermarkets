@@ -82,12 +82,15 @@ const transactionSchema = new mongoose.Schema({
     userName: { type: String, required: true },
     type: { type: String, enum: ['deposit', 'withdrawal', 'profit', 'trade', 'admin_deposit', 'admin_deduct'], required: true },
     amount: { type: Number, required: true },
-    status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'completed' },
+    status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
     transactionId: { type: String, unique: true },
     description: { type: String },
     adminName: { type: String },
     withdrawalFee: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    approvedAt: { type: Date },
+    paymentMethod: { type: String, default: 'crypto' },
+    walletAddress: { type: String, default: '' }
 });
 
 const withdrawalSchema = new mongoose.Schema({
@@ -123,22 +126,31 @@ const SupportChat = mongoose.model('SupportChat', supportChatSchema);
 
 // ============= MIDDLEWARE =============
 const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Access denied' });
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+        return res.status(401).json({ error: 'Access denied. No token provided.' });
+    }
     
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET || 'lazermarkets_jwt_secret');
         req.user = verified;
         next();
     } catch (error) {
+        console.error('Token verification error:', error);
         res.status(400).json({ error: 'Invalid token' });
     }
 };
 
 const isAdmin = async (req, res, next) => {
-    const user = await User.findById(req.user.id);
-    if (!user || !user.isAdmin) return res.status(403).json({ error: 'Admin access required' });
-    next();
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user || !user.isAdmin) return res.status(403).json({ error: 'Admin access required' });
+        next();
+    } catch (error) {
+        res.status(500).json({ error: 'Error checking admin status' });
+    }
 };
 
 function generatePasskey() {
@@ -387,6 +399,7 @@ async function updateActiveTrades() {
                     userName: user.fullName,
                     type: 'profit',
                     amount: Math.abs(profit),
+                    status: 'completed',
                     transactionId: 'TRADE_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
                     description: `${trade.side.toUpperCase()} trade on ${trade.symbolName} completed after ${trade.duration}. ${profit >= 0 ? `WIN! +${(profit/trade.amount*100).toFixed(0)}% profit (88% cap)` : `LOSS: -$${Math.abs(profit).toFixed(2)} (max loss $10)`}`
                 });
@@ -551,17 +564,19 @@ app.post('/api/ai/stop-trade/:tradeId', authenticateToken, async (req, res) => {
     }
 });
 
-// ============= DEPOSIT ROUTES =============
+// ============= DEPOSIT ROUTES WITH APPROVAL SYSTEM =============
+
+// Create deposit request
 app.post('/api/deposit/create', authenticateToken, async (req, res) => {
     try {
-        const { amount } = req.body;
+        const { amount, walletAddress, network } = req.body;
         const user = await User.findById(req.user.id);
         
         if (amount < 60) {
             return res.status(400).json({ error: 'Minimum deposit is $60 USD' });
         }
         
-        const paymentId = 'DEP_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8);
+        const depositId = 'DEP_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8).toUpperCase();
         
         const transaction = new Transaction({
             userId: user._id,
@@ -569,30 +584,132 @@ app.post('/api/deposit/create', authenticateToken, async (req, res) => {
             type: 'deposit',
             amount: amount,
             status: 'pending',
-            transactionId: paymentId,
-            description: 'Crypto deposit - Send funds to provided wallet address'
+            transactionId: depositId,
+            description: `Deposit request of $${amount} USD via ${network || 'crypto'}`,
+            paymentMethod: network || 'crypto',
+            walletAddress: walletAddress || ''
         });
         await transaction.save();
         
         res.json({
             success: true,
-            paymentId: paymentId
+            depositId: depositId,
+            message: 'Deposit request created. Awaiting admin approval.'
         });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create deposit' });
+        console.error('Deposit creation error:', error);
+        res.status(500).json({ error: 'Failed to create deposit request' });
     }
 });
 
-app.get('/api/deposit/check/:paymentId', authenticateToken, async (req, res) => {
+// Get user's deposit requests
+app.get('/api/deposit/requests', authenticateToken, async (req, res) => {
     try {
-        const transaction = await Transaction.findOne({ transactionId: req.params.paymentId });
+        const deposits = await Transaction.find({ 
+            userId: req.user.id, 
+            type: 'deposit' 
+        }).sort({ createdAt: -1 });
+        
+        res.json(deposits);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch deposit requests' });
+    }
+});
+
+// Get all pending deposits (admin)
+app.get('/api/admin/deposits/pending', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const pendingDeposits = await Transaction.find({ 
+            type: 'deposit', 
+            status: 'pending' 
+        }).sort({ createdAt: -1 });
+        
+        res.json(pendingDeposits);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch pending deposits' });
+    }
+});
+
+// Get all deposits (admin)
+app.get('/api/admin/deposits/all', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const deposits = await Transaction.find({ type: 'deposit' }).sort({ createdAt: -1 });
+        res.json(deposits);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch deposits' });
+    }
+});
+
+// Approve deposit (admin)
+app.post('/api/admin/deposits/approve/:depositId', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { depositId } = req.params;
+        const admin = await User.findById(req.user.id);
+        
+        const transaction = await Transaction.findOne({ transactionId: depositId, type: 'deposit' });
         if (!transaction) {
-            return res.status(404).json({ error: 'Transaction not found' });
+            return res.status(404).json({ error: 'Deposit request not found' });
         }
         
-        res.json({ status: transaction.status });
+        if (transaction.status !== 'pending') {
+            return res.status(400).json({ error: 'Deposit already processed' });
+        }
+        
+        const user = await User.findById(transaction.userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        // Update user balance
+        user.balance = user.balance + transaction.amount;
+        user.totalDeposits = (user.totalDeposits || 0) + transaction.amount;
+        await user.save();
+        
+        // Update transaction status
+        transaction.status = 'completed';
+        transaction.adminName = admin.fullName;
+        transaction.approvedAt = new Date();
+        transaction.description = `Deposit of $${transaction.amount} USD approved by ${admin.fullName}`;
+        await transaction.save();
+        
+        res.json({ 
+            success: true, 
+            message: `Deposit of $${transaction.amount} approved for ${user.fullName}`,
+            newBalance: user.balance
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to check status' });
+        console.error('Deposit approval error:', error);
+        res.status(500).json({ error: 'Failed to approve deposit' });
+    }
+});
+
+// Reject deposit (admin)
+app.post('/api/admin/deposits/reject/:depositId', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { depositId } = req.params;
+        const { reason } = req.body;
+        const admin = await User.findById(req.user.id);
+        
+        const transaction = await Transaction.findOne({ transactionId: depositId, type: 'deposit' });
+        if (!transaction) {
+            return res.status(404).json({ error: 'Deposit request not found' });
+        }
+        
+        if (transaction.status !== 'pending') {
+            return res.status(400).json({ error: 'Deposit already processed' });
+        }
+        
+        transaction.status = 'failed';
+        transaction.adminName = admin.fullName;
+        transaction.description = `Deposit rejected by ${admin.fullName}. Reason: ${reason || 'Not specified'}`;
+        await transaction.save();
+        
+        res.json({ 
+            success: true, 
+            message: `Deposit request rejected` 
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to reject deposit' });
     }
 });
 
@@ -647,7 +764,6 @@ app.post('/api/withdrawal/request', authenticateToken, async (req, res) => {
 
 // ============= SUPPORT CHAT ROUTES =============
 
-// User sends a support message
 app.post('/api/support/send', authenticateToken, async (req, res) => {
     try {
         const { message } = req.body;
@@ -675,7 +791,6 @@ app.post('/api/support/send', authenticateToken, async (req, res) => {
     }
 });
 
-// Get user's chat history
 app.get('/api/support/history', authenticateToken, async (req, res) => {
     try {
         const chats = await SupportChat.find({ userId: req.user.id }).sort({ createdAt: 1 });
@@ -685,7 +800,6 @@ app.get('/api/support/history', authenticateToken, async (req, res) => {
     }
 });
 
-// Get unread count for user
 app.get('/api/support/unread-count', authenticateToken, async (req, res) => {
     try {
         const count = await SupportChat.countDocuments({ 
@@ -699,7 +813,6 @@ app.get('/api/support/unread-count', authenticateToken, async (req, res) => {
     }
 });
 
-// Mark messages as read
 app.post('/api/support/mark-read', authenticateToken, async (req, res) => {
     try {
         await SupportChat.updateMany(
@@ -714,7 +827,6 @@ app.post('/api/support/mark-read', authenticateToken, async (req, res) => {
 
 // ============= ADMIN SUPPORT ROUTES =============
 
-// Get all support tickets (admin)
 app.get('/api/admin/support/tickets', authenticateToken, isAdmin, async (req, res) => {
     try {
         const tickets = await SupportChat.aggregate([
@@ -740,7 +852,6 @@ app.get('/api/admin/support/tickets', authenticateToken, isAdmin, async (req, re
     }
 });
 
-// Get full conversation with a user (admin)
 app.get('/api/admin/support/conversation/:userId', authenticateToken, isAdmin, async (req, res) => {
     try {
         const messages = await SupportChat.find({ userId: req.params.userId }).sort({ createdAt: 1 });
@@ -750,7 +861,6 @@ app.get('/api/admin/support/conversation/:userId', authenticateToken, isAdmin, a
     }
 });
 
-// Admin replies to a user
 app.post('/api/admin/support/reply', authenticateToken, isAdmin, async (req, res) => {
     try {
         const { userId, reply } = req.body;
@@ -781,7 +891,6 @@ app.post('/api/admin/support/reply', authenticateToken, isAdmin, async (req, res
     }
 });
 
-// Close a ticket (admin)
 app.post('/api/admin/support/close/:userId', authenticateToken, isAdmin, async (req, res) => {
     try {
         await SupportChat.updateMany(
@@ -833,6 +942,7 @@ app.post('/api/admin/add-balance', authenticateToken, isAdmin, async (req, res) 
             userName: user.fullName,
             type: 'admin_deposit',
             amount: amount,
+            status: 'completed',
             transactionId: 'ADMIN_DEP_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
             description: description || 'Admin deposit',
             adminName: admin.fullName
@@ -863,6 +973,7 @@ app.post('/api/admin/deduct-balance', authenticateToken, isAdmin, async (req, re
             userName: user.fullName,
             type: 'admin_deduct',
             amount: amount,
+            status: 'completed',
             transactionId: 'ADMIN_WD_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
             description: description || 'Admin deduction',
             adminName: admin.fullName
@@ -904,12 +1015,16 @@ app.get('/api/admin/stats', authenticateToken, isAdmin, async (req, res) => {
         const activeUsers = await User.countDocuments({ isActive: true });
         const totalBalance = await User.aggregate([{ $group: { _id: null, total: { $sum: '$balance' } } }]);
         const totalProfit = await User.aggregate([{ $group: { _id: null, total: { $sum: '$totalProfit' } } }]);
+        const pendingDeposits = await Transaction.countDocuments({ type: 'deposit', status: 'pending' });
+        const pendingWithdrawals = await Withdrawal.countDocuments({ status: 'pending' });
         
         res.json({
             totalUsers,
             activeUsers,
             totalBalance: totalBalance[0]?.total || 0,
-            totalProfit: totalProfit[0]?.total || 0
+            totalProfit: totalProfit[0]?.total || 0,
+            pendingDeposits,
+            pendingWithdrawals
         });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch stats' });
@@ -1013,10 +1128,8 @@ app.listen(PORT, async () => {
     await createDefaultAdmin();
     console.log(`🚀 Lazer Markets Server running on http://localhost:${PORT}`);
     console.log(`✅ CORS enabled for all origins`);
-    console.log(`📱 Backend API available at: https://lazermarkets.onrender.com`);
     console.log(`💰 AI Profit: 88% of stake on WIN (80% win rate)`);
     console.log(`⚠️ AI Loss: Maximum $10 loss on LOSS (20% loss rate)`);
-    console.log(`⏱️ Trades ONLY complete when duration time has fully elapsed`);
     console.log(`💬 Support chat system enabled`);
-    console.log(`🏦 Deposit wallet addresses: BTC, USDT(TRC20), ETH(ERC20)`);
+    console.log(`🏦 Deposit approval system enabled`);
 });
