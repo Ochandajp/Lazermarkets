@@ -103,10 +103,23 @@ const withdrawalSchema = new mongoose.Schema({
     processedBy: { type: String }
 });
 
+const supportChatSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userName: { type: String, required: true },
+    userEmail: { type: String, required: true },
+    message: { type: String, required: true },
+    isFromUser: { type: Boolean, default: true },
+    isRead: { type: Boolean, default: false },
+    adminReply: { type: String, default: '' },
+    status: { type: String, enum: ['open', 'closed', 'replied'], default: 'open' },
+    createdAt: { type: Date, default: Date.now }
+});
+
 const User = mongoose.model('User', userSchema);
 const Trade = mongoose.model('Trade', tradeSchema);
 const Transaction = mongoose.model('Transaction', transactionSchema);
 const Withdrawal = mongoose.model('Withdrawal', withdrawalSchema);
+const SupportChat = mongoose.model('SupportChat', supportChatSchema);
 
 // ============= MIDDLEWARE =============
 const authenticateToken = (req, res, next) => {
@@ -310,7 +323,7 @@ function analyzeMarket(symbol, currentPrice, change24h, volume, volatility) {
     return analysis;
 }
 
-// ============= UPDATE ACTIVE TRADES - 80% WIN RATE, 88% PROFIT, $10 LOSS =============
+// ============= UPDATE ACTIVE TRADES =============
 async function updateActiveTrades() {
     const activeTrades = await Trade.find({ status: 'active' });
     const now = Date.now();
@@ -335,16 +348,15 @@ async function updateActiveTrades() {
         if (elapsed >= trade.durationMs) {
             console.log(`Trade completed after ${elapsed}ms (duration: ${trade.durationMs}ms)`);
             
-            // 80% WIN RATE, 20% LOSS RATE
             const randomValue = Math.random();
-            const isWin = randomValue < 0.8; // 80% chance to win
+            const isWin = randomValue < 0.8;
             
             let profit = 0;
             if (isWin) {
-                profit = trade.amount * 0.88; // 88% profit on win
+                profit = trade.amount * 0.88;
                 console.log(`✅ WINNING TRADE: +$${profit.toFixed(2)} (${(profit/trade.amount*100).toFixed(0)}% profit)`);
             } else {
-                profit = -10; // Maximum $10 loss on loss
+                profit = -10;
                 console.log(`❌ LOSING TRADE: -$${Math.abs(profit).toFixed(2)} (max loss $10)`);
             }
             
@@ -386,7 +398,6 @@ async function updateActiveTrades() {
     }
 }
 
-// Run every 5 seconds to check for completed trades
 setInterval(updateActiveTrades, 5000);
 
 // ============= AI START TRADE =============
@@ -401,7 +412,7 @@ app.post('/api/ai/start-trade', authenticateToken, async (req, res) => {
         }
         
         if (amount < 115) {
-            return res.status(400).json({ error: 'Minimum AI trade amount is $115 USD' });
+            return res.status(400).json({ error: 'Minimum AI stake amount is $115 USD' });
         }
         
         if (amount > user.balance) {
@@ -492,6 +503,7 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
         const activeTrades = await Trade.find({ userId: req.user.id, status: 'active' }).sort({ startedAt: -1 });
         const tradeHistory = await Trade.find({ userId: req.user.id, status: 'completed' }).sort({ endedAt: -1 }).limit(50);
         const withdrawalHistory = await Withdrawal.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(20);
+        const transactions = await Transaction.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(50);
         
         const totalInvested = tradeHistory.reduce((sum, t) => sum + t.amount, 0);
         const totalProfit = tradeHistory.reduce((sum, t) => sum + (t.profit || 0), 0);
@@ -502,6 +514,7 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
             activeTrades,
             tradeHistory,
             withdrawalHistory,
+            transactions,
             roi: roi.toFixed(2)
         });
     } catch (error) {
@@ -557,7 +570,7 @@ app.post('/api/deposit/create', authenticateToken, async (req, res) => {
             amount: amount,
             status: 'pending',
             transactionId: paymentId,
-            description: 'Crypto deposit via NOWPayments'
+            description: 'Crypto deposit - Send funds to provided wallet address'
         });
         await transaction.save();
         
@@ -629,6 +642,155 @@ app.post('/api/withdrawal/request', authenticateToken, async (req, res) => {
         res.json({ success: true, message: 'Withdrawal request submitted', feeAmount: feeAmount, netAmount: netAmount });
     } catch (error) {
         res.status(500).json({ error: 'Failed to process withdrawal' });
+    }
+});
+
+// ============= SUPPORT CHAT ROUTES =============
+
+// User sends a support message
+app.post('/api/support/send', authenticateToken, async (req, res) => {
+    try {
+        const { message } = req.body;
+        const user = await User.findById(req.user.id);
+        
+        if (!message || message.trim() === '') {
+            return res.status(400).json({ error: 'Message cannot be empty' });
+        }
+        
+        const chatMessage = new SupportChat({
+            userId: user._id,
+            userName: user.fullName,
+            userEmail: user.email,
+            message: message,
+            isFromUser: true,
+            isRead: false,
+            status: 'open'
+        });
+        
+        await chatMessage.save();
+        
+        res.json({ success: true, message: 'Message sent to support' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to send message' });
+    }
+});
+
+// Get user's chat history
+app.get('/api/support/history', authenticateToken, async (req, res) => {
+    try {
+        const chats = await SupportChat.find({ userId: req.user.id }).sort({ createdAt: 1 });
+        res.json(chats);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch chat history' });
+    }
+});
+
+// Get unread count for user
+app.get('/api/support/unread-count', authenticateToken, async (req, res) => {
+    try {
+        const count = await SupportChat.countDocuments({ 
+            userId: req.user.id, 
+            isFromUser: false, 
+            isRead: false 
+        });
+        res.json({ count });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get unread count' });
+    }
+});
+
+// Mark messages as read
+app.post('/api/support/mark-read', authenticateToken, async (req, res) => {
+    try {
+        await SupportChat.updateMany(
+            { userId: req.user.id, isFromUser: false, isRead: false },
+            { isRead: true }
+        );
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to mark as read' });
+    }
+});
+
+// ============= ADMIN SUPPORT ROUTES =============
+
+// Get all support tickets (admin)
+app.get('/api/admin/support/tickets', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const tickets = await SupportChat.aggregate([
+            { $sort: { createdAt: -1 } },
+            { $group: {
+                _id: '$userId',
+                userName: { $first: '$userName' },
+                userEmail: { $first: '$userEmail' },
+                lastMessage: { $first: '$message' },
+                lastMessageTime: { $first: '$createdAt' },
+                status: { $first: '$status' },
+                unreadCount: { 
+                    $sum: { 
+                        $cond: [{ $and: [{ $eq: ['$isFromUser', false] }, { $eq: ['$isRead', false] }] }, 1, 0] 
+                    } 
+                }
+            }},
+            { $sort: { lastMessageTime: -1 } }
+        ]);
+        res.json(tickets);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch tickets' });
+    }
+});
+
+// Get full conversation with a user (admin)
+app.get('/api/admin/support/conversation/:userId', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const messages = await SupportChat.find({ userId: req.params.userId }).sort({ createdAt: 1 });
+        res.json(messages);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch conversation' });
+    }
+});
+
+// Admin replies to a user
+app.post('/api/admin/support/reply', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        const { userId, reply } = req.body;
+        
+        if (!reply || reply.trim() === '') {
+            return res.status(400).json({ error: 'Reply cannot be empty' });
+        }
+        
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        
+        const chatMessage = new SupportChat({
+            userId: userId,
+            userName: 'Support Team',
+            userEmail: 'support@lazermarkets.com',
+            message: reply,
+            isFromUser: false,
+            isRead: false,
+            adminReply: reply,
+            status: 'replied'
+        });
+        
+        await chatMessage.save();
+        
+        res.json({ success: true, message: 'Reply sent to user' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to send reply' });
+    }
+});
+
+// Close a ticket (admin)
+app.post('/api/admin/support/close/:userId', authenticateToken, isAdmin, async (req, res) => {
+    try {
+        await SupportChat.updateMany(
+            { userId: req.params.userId, status: { $ne: 'closed' } },
+            { status: 'closed' }
+        );
+        res.json({ success: true, message: 'Ticket closed' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to close ticket' });
     }
 });
 
@@ -855,4 +1017,6 @@ app.listen(PORT, async () => {
     console.log(`💰 AI Profit: 88% of stake on WIN (80% win rate)`);
     console.log(`⚠️ AI Loss: Maximum $10 loss on LOSS (20% loss rate)`);
     console.log(`⏱️ Trades ONLY complete when duration time has fully elapsed`);
+    console.log(`💬 Support chat system enabled`);
+    console.log(`🏦 Deposit wallet addresses: BTC, USDT(TRC20), ETH(ERC20)`);
 });

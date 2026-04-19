@@ -224,7 +224,7 @@
             max-height: 300px;
         }
 
-        .users-section, .withdrawals-section, .transactions-section {
+        .users-section, .withdrawals-section, .transactions-section, .support-section {
             background: rgba(15,19,34,0.9);
             border-radius: 20px;
             border: 1px solid rgba(0,102,255,0.2);
@@ -365,6 +365,11 @@
             color: white;
         }
 
+        .action-btn.reply {
+            background: #00d4aa;
+            color: #0a0e1a;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -386,9 +391,11 @@
             background: #0f1322;
             border-radius: 24px;
             padding: 35px;
-            width: 500px;
+            width: 600px;
             max-width: 90%;
             border: 1px solid #0066ff;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal-content h3 {
@@ -461,6 +468,37 @@
             color: #0066ff;
         }
 
+        .conversation-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .message-user {
+            background: rgba(0,102,255,0.1);
+        }
+
+        .message-support {
+            background: rgba(0,212,170,0.1);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #8a92b0;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            color: #8a92b0;
+        }
+
+        .close-modal:hover {
+            color: #ff6b6b;
+        }
+
         @media (max-width: 1024px) {
             .sidebar { width: 80px; }
             .sidebar .logo-text, .sidebar .admin-badge, .sidebar .nav-item span { display: none; }
@@ -492,6 +530,7 @@
                 <div class="nav-item" data-section="users"><i class="fas fa-users"></i> <span>Users Management</span></div>
                 <div class="nav-item" data-section="withdrawals"><i class="fas fa-money-bill-wave"></i> <span>Withdrawals</span></div>
                 <div class="nav-item" data-section="transactions"><i class="fas fa-history"></i> <span>Transactions</span></div>
+                <div class="nav-item" data-section="support"><i class="fas fa-headset"></i> <span>Support Tickets</span></div>
             </div>
         </div>
 
@@ -504,6 +543,7 @@
                 </div>
             </div>
 
+            <!-- Dashboard Section -->
             <div id="dashboardSection">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -529,16 +569,17 @@
                 </div>
                 <div class="charts-row">
                     <div class="chart-card">
-                        <h3><i class="fas fa-chart-line"></i> User Growth</h3>
+                        <h3><i class="fas fa-chart-line"></i> User Growth (Last 30 Days)</h3>
                         <canvas id="userGrowthChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <h3><i class="fas fa-chart-pie"></i> Experience Distribution</h3>
+                        <h3><i class="fas fa-chart-pie"></i> Trading Experience Distribution</h3>
                         <canvas id="experienceChart"></canvas>
                     </div>
                 </div>
             </div>
 
+            <!-- Users Section -->
             <div id="usersSection" style="display: none;">
                 <div class="users-section">
                     <div class="section-header">
@@ -574,6 +615,7 @@
                 </div>
             </div>
 
+            <!-- Withdrawals Section -->
             <div id="withdrawalsSection" style="display: none;">
                 <div class="users-section">
                     <div class="section-header">
@@ -602,6 +644,7 @@
                 </div>
             </div>
 
+            <!-- Transactions Section -->
             <div id="transactionsSection" style="display: none;">
                 <div class="users-section">
                     <div class="section-header">
@@ -628,13 +671,40 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Support Tickets Section -->
+            <div id="supportSection" style="display: none;">
+                <div class="users-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-headset"></i> Support Tickets</h3>
+                        <button class="action-btn add" onclick="loadSupportTickets()" style="padding: 10px 18px;"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div class="users-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Last Message</th>
+                                    <th>Status</th>
+                                    <th>Unread</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="supportTicketsList">
+                                <tr><td colspan="6"><div class="loading">Loading tickets...</div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Add Balance Modal -->
+    <!-- Balance Modal -->
     <div id="balanceModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('balanceModal')" style="float: right; font-size: 28px; cursor: pointer;">&times;</span>
+            <span class="close-modal" onclick="closeModal('balanceModal')">&times;</span>
             <h3><i class="fas fa-dollar-sign"></i> Add / Deduct Balance</h3>
             <input type="text" id="modalUserId" readonly style="background:#2d3748;">
             <input type="text" id="modalUserName" readonly style="background:#2d3748;">
@@ -653,9 +723,9 @@
 
     <!-- User Details Modal -->
     <div id="userModal" class="modal">
-        <div class="modal-content" style="width: 600px;">
-            <span class="close-modal" onclick="closeModal('userModal')" style="float: right; font-size: 28px; cursor: pointer;">&times;</span>
-            <h3>User Details</h3>
+        <div class="modal-content" style="width: 700px;">
+            <span class="close-modal" onclick="closeModal('userModal')">&times;</span>
+            <h3><i class="fas fa-user-circle"></i> User Details</h3>
             <div id="userDetails"></div>
         </div>
     </div>
@@ -663,13 +733,29 @@
     <!-- Passkey Modal -->
     <div id="passkeyModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('passkeyModal')" style="float: right; font-size: 28px; cursor: pointer;">&times;</span>
+            <span class="close-modal" onclick="closeModal('passkeyModal')">&times;</span>
             <h3><i class="fas fa-key"></i> AI Passkey Management</h3>
             <div id="passkeyModalContent"></div>
             <div class="modal-buttons">
                 <button onclick="generatePasskey()">Generate New 12-Digit Passkey</button>
                 <button onclick="deletePasskey()">Delete Passkey</button>
                 <button onclick="closeModal('passkeyModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reply Modal for Support -->
+    <div id="replyModal" class="modal">
+        <div class="modal-content" style="width: 700px;">
+            <span class="close-modal" onclick="closeModal('replyModal')">&times;</span>
+            <h3><i class="fas fa-reply"></i> Reply to User</h3>
+            <div id="replyUserInfo"></div>
+            <div id="conversationHistory" style="max-height: 300px; overflow-y: auto; background: #1a1f30; border-radius: 10px; padding: 15px; margin: 15px 0;"></div>
+            <textarea id="replyMessage" rows="4" placeholder="Type your reply here..." style="width: 100%; padding: 12px; background: #1a1f30; border: 1px solid #2d3748; border-radius: 10px; color: white;"></textarea>
+            <div class="modal-buttons">
+                <button onclick="sendReply()">Send Reply</button>
+                <button onclick="closeTicket()">Close Ticket</button>
+                <button onclick="closeModal('replyModal')">Cancel</button>
             </div>
         </div>
     </div>
@@ -685,6 +771,7 @@
 
         let currentUsers = [];
         let currentPasskeyUserId = null;
+        let currentReplyUserId = null;
         let userGrowthChart, experienceChart;
 
         // Navigation
@@ -698,13 +785,21 @@
                 document.getElementById('usersSection').style.display = section === 'users' ? 'block' : 'none';
                 document.getElementById('withdrawalsSection').style.display = section === 'withdrawals' ? 'block' : 'none';
                 document.getElementById('transactionsSection').style.display = section === 'transactions' ? 'block' : 'none';
+                document.getElementById('supportSection').style.display = section === 'support' ? 'block' : 'none';
                 
-                const titles = { dashboard: 'Dashboard Overview', users: 'Users Management', withdrawals: 'Withdrawal Requests', transactions: 'Transaction History' };
+                const titles = { 
+                    dashboard: 'Dashboard Overview', 
+                    users: 'Users Management', 
+                    withdrawals: 'Withdrawal Requests', 
+                    transactions: 'Transaction History', 
+                    support: 'Support Tickets' 
+                };
                 document.getElementById('pageTitle').innerText = titles[section];
                 
                 if (section === 'users') loadUsers();
                 if (section === 'withdrawals') loadWithdrawals();
                 if (section === 'transactions') loadTransactions();
+                if (section === 'support') loadSupportTickets();
             });
         });
 
@@ -734,14 +829,28 @@
 
         function initCharts(users) {
             const experienceCount = { Beginner: 0, Intermediate: 0, Expert: 0 };
-            users.forEach(u => { if (experienceCount[u.tradingExperience] !== undefined) experienceCount[u.tradingExperience]++; });
+            users.forEach(u => { 
+                if (experienceCount[u.tradingExperience] !== undefined) 
+                    experienceCount[u.tradingExperience]++; 
+            });
             
             if (experienceChart) experienceChart.destroy();
             const expCtx = document.getElementById('experienceChart').getContext('2d');
             experienceChart = new Chart(expCtx, {
                 type: 'pie',
-                data: { labels: Object.keys(experienceCount), datasets: [{ data: Object.values(experienceCount), backgroundColor: ['#0066ff', '#00c6fb', '#764ba2'] }] },
-                options: { responsive: true, plugins: { legend: { labels: { color: '#e0e3eb' } } } }
+                data: { 
+                    labels: Object.keys(experienceCount), 
+                    datasets: [{ 
+                        data: Object.values(experienceCount), 
+                        backgroundColor: ['#0066ff', '#00c6fb', '#764ba2'] 
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    plugins: { 
+                        legend: { labels: { color: '#e0e3eb' } } 
+                    } 
+                }
             });
             
             const last30Days = Array(30).fill(0);
@@ -753,8 +862,22 @@
             const growthCtx = document.getElementById('userGrowthChart').getContext('2d');
             userGrowthChart = new Chart(growthCtx, {
                 type: 'line',
-                data: { labels: Array(30).fill().map((_, i) => `Day ${i+1}`), datasets: [{ label: 'New Users', data: last30Days, borderColor: '#0066ff', fill: true, backgroundColor: 'rgba(0,102,255,0.1)' }] },
-                options: { responsive: true, plugins: { legend: { labels: { color: '#e0e3eb' } } } }
+                data: { 
+                    labels: Array(30).fill().map((_, i) => `Day ${i+1}`), 
+                    datasets: [{ 
+                        label: 'New Users', 
+                        data: last30Days, 
+                        borderColor: '#0066ff', 
+                        fill: true, 
+                        backgroundColor: 'rgba(0,102,255,0.1)' 
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    plugins: { 
+                        legend: { labels: { color: '#e0e3eb' } } 
+                    } 
+                }
             });
         }
 
@@ -789,16 +912,16 @@
             
             tbody.innerHTML = filtered.map(user => `
                 <tr>
-                    <td><strong>${user.fullName}</strong><br><small style="color:#8a92b0">${user.email}</small></td>
-                    <td>${user.country}<br><small>${user.countryCode} ${user.phoneNumber}</small></td>
+                    <td><strong>${escapeHtml(user.fullName)}</strong><br><small style="color:#8a92b0">${escapeHtml(user.email)}</small></td>
+                    <td>${escapeHtml(user.country)}<br><small>${user.countryCode} ${user.phoneNumber}</small></td>
                     <td><strong style="color:#0066ff">$${user.balance?.toLocaleString() || '0'}</strong><br><small>Deposits: $${(user.totalDeposits || 0).toLocaleString()}</small></td>
                     <td>${user.tradingExperience || 'N/A'}</td>
                     <td><span class="user-status ${user.isActive ? 'status-active' : 'status-inactive'}">${user.isActive ? 'Active' : 'Inactive'}</span></td>
                     <td><small>${new Date(user.createdAt).toLocaleDateString()}</small></td>
                     <td class="action-buttons">
-                        <button class="action-btn add" onclick="openBalanceModal('${user._id}', '${user.fullName}', 'add')"><i class="fas fa-plus"></i> Add Funds</button>
-                        <button class="action-btn deduct" onclick="openBalanceModal('${user._id}', '${user.fullName}', 'deduct')"><i class="fas fa-minus"></i> Deduct</button>
-                        <button class="action-btn passkey" onclick="openPasskeyModal('${user._id}', '${user.fullName}')"><i class="fas fa-key"></i> Passkey</button>
+                        <button class="action-btn add" onclick="openBalanceModal('${user._id}', '${escapeHtml(user.fullName)}', 'add')"><i class="fas fa-plus"></i> Add</button>
+                        <button class="action-btn deduct" onclick="openBalanceModal('${user._id}', '${escapeHtml(user.fullName)}', 'deduct')"><i class="fas fa-minus"></i> Deduct</button>
+                        <button class="action-btn passkey" onclick="openPasskeyModal('${user._id}', '${escapeHtml(user.fullName)}')"><i class="fas fa-key"></i> Passkey</button>
                         <button class="action-btn toggle" onclick="toggleUserStatus('${user._id}', ${!user.isActive})"><i class="fas fa-power-off"></i> ${user.isActive ? 'Disable' : 'Enable'}</button>
                         <button class="action-btn view" onclick="viewUserDetails('${user._id}')"><i class="fas fa-eye"></i> View</button>
                     </td>
@@ -822,7 +945,7 @@
                 
                 tbody.innerHTML = withdrawals.map(w => `
                     <tr>
-                        <td>${w.userName}</td>
+                        <td>${escapeHtml(w.userName)}</td>
                         <td><strong>$${w.amount.toLocaleString()}</strong></td>
                         <td>$${(w.feeAmount || 0).toFixed(2)}</td>
                         <td>${w.network}</td>
@@ -872,14 +995,14 @@
                 const tbody = document.getElementById('transactionsList');
                 
                 if (transactions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">No transactions found</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px;">No transactions found</tr>';
                     return;
                 }
                 
                 tbody.innerHTML = transactions.map(t => `
                     <tr>
                         <td><small>${t.transactionId}</small></td>
-                        <td>${t.userName}</td>
+                        <td>${escapeHtml(t.userName)}</td>
                         <td><span style="color: ${t.type === 'admin_deposit' ? '#0066ff' : t.type === 'admin_deduct' ? '#ffc107' : '#00c6fb'}">${t.type.replace('_', ' ').toUpperCase()}</span></td>
                         <td><strong>$${t.amount.toLocaleString()}</strong></td>
                         <td>${t.withdrawalFee ? `$${t.withdrawalFee.toFixed(2)}` : '-'}</td>
@@ -888,7 +1011,118 @@
                     </tr>
                 `).join('');
             } catch (error) {
-                document.getElementById('transactionsList').innerHTML = '<tr><td colspan="7">Error loading transactions</td></tr>';
+                document.getElementById('transactionsList').innerHTML = '<tr><td colspan="7">Error loading transactions</tr>';
+            }
+        }
+
+        // Support Tickets
+        async function loadSupportTickets() {
+            try {
+                const response = await fetch(`${API_URL}/api/admin/support/tickets`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const tickets = await response.json();
+                const tbody = document.getElementById('supportTicketsList');
+                
+                if (tickets.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px;">No support tickets</tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = tickets.map(ticket => `
+                    <tr>
+                        <td><strong>${escapeHtml(ticket.userName)}</strong></td>
+                        <td>${escapeHtml(ticket.userEmail)}</td>
+                        <td><small>${escapeHtml(ticket.lastMessage?.substring(0, 50))}...</small><br><small style="color:#8a92b0">${new Date(ticket.lastMessageTime).toLocaleString()}</small></td>
+                        <td><span class="user-status ${ticket.status === 'open' ? 'status-pending' : 'status-active'}">${ticket.status}</span></td>
+                        <td>${ticket.unreadCount > 0 ? `<span style="background:#ff6b6b; padding:2px 8px; border-radius:12px; color:white;">${ticket.unreadCount}</span>` : '-'}</td>
+                        <td class="action-buttons">
+                            <button class="action-btn reply" onclick="openReplyModal('${ticket._id}', '${escapeHtml(ticket.userName)}', '${escapeHtml(ticket.userEmail)}')"><i class="fas fa-reply"></i> Reply</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                document.getElementById('supportTicketsList').innerHTML = '<tr><td colspan="6">Error loading tickets</tr>';
+            }
+        }
+
+        async function openReplyModal(userId, userName, userEmail) {
+            currentReplyUserId = userId;
+            document.getElementById('replyUserInfo').innerHTML = `<p><strong>User:</strong> ${userName}</p><p><strong>Email:</strong> ${userEmail}</p>`;
+            document.getElementById('replyMessage').value = '';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/support/conversation/${userId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const messages = await response.json();
+                
+                const historyDiv = document.getElementById('conversationHistory');
+                historyDiv.innerHTML = messages.map(msg => `
+                    <div class="conversation-message ${msg.isFromUser ? 'message-user' : 'message-support'}" style="margin-bottom: 10px; padding: 8px; border-radius: 8px; background: ${msg.isFromUser ? 'rgba(0,102,255,0.1)' : 'rgba(0,212,170,0.1)'};">
+                        <strong>${msg.isFromUser ? msg.userName : 'Support Team'}:</strong>
+                        <p style="margin-top: 5px; font-size: 13px;">${escapeHtml(msg.message)}</p>
+                        <small style="color: #8a92b0;">${new Date(msg.createdAt).toLocaleString()}</small>
+                    </div>
+                `).join('');
+                
+                if (messages.length === 0) {
+                    historyDiv.innerHTML = '<p style="text-align:center; color:#8a92b0;">No previous messages</p>';
+                }
+                
+                document.getElementById('replyModal').classList.add('active');
+            } catch (error) {
+                showToast('Error loading conversation', 'error');
+            }
+        }
+
+        async function sendReply() {
+            const reply = document.getElementById('replyMessage').value.trim();
+            if (!reply) {
+                showToast('Please enter a reply', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/support/reply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ userId: currentReplyUserId, reply })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Reply sent to user!');
+                    closeModal('replyModal');
+                    loadSupportTickets();
+                } else {
+                    showToast(data.error, 'error');
+                }
+            } catch (error) {
+                showToast('Error sending reply', 'error');
+            }
+        }
+
+        async function closeTicket() {
+            if (!confirm('Close this support ticket?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admin/support/close/${currentReplyUserId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Ticket closed');
+                    closeModal('replyModal');
+                    loadSupportTickets();
+                }
+            } catch (error) {
+                showToast('Error closing ticket', 'error');
             }
         }
 
@@ -1036,10 +1270,10 @@
                 
                 document.getElementById('userDetails').innerHTML = `
                     <div style="margin-bottom: 20px;">
-                        <p><strong>Full Name:</strong> ${user.fullName}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Full Name:</strong> ${escapeHtml(user.fullName)}</p>
+                        <p><strong>Email:</strong> ${escapeHtml(user.email)}</p>
                         <p><strong>Age:</strong> ${user.age}</p>
-                        <p><strong>Country:</strong> ${user.country}</p>
+                        <p><strong>Country:</strong> ${escapeHtml(user.country)}</p>
                         <p><strong>Phone:</strong> ${user.countryCode} ${user.phoneNumber}</p>
                         <p><strong>Employment:</strong> ${user.employmentStatus}</p>
                         <p><strong>Trading Experience:</strong> ${user.tradingExperience}</p>
@@ -1047,6 +1281,8 @@
                         <p><strong>Balance:</strong> <span style="color:#0066ff; font-size:20px;">$${user.balance.toLocaleString()}</span></p>
                         <p><strong>Total Deposits:</strong> $${(user.totalDeposits || 0).toLocaleString()}</p>
                         <p><strong>Total Profit:</strong> $${(user.totalProfit || 0).toLocaleString()}</p>
+                        <p><strong>Total Trades:</strong> ${(user.totalTrades || 0)}</p>
+                        <p><strong>Win Rate:</strong> ${(user.winRate || 0).toFixed(1)}%</p>
                         <p><strong>AI Passkey:</strong> <span style="font-family:monospace;">${user.aiApiKey || 'Not set'}</span></p>
                         <p><strong>Joined:</strong> ${new Date(user.createdAt).toLocaleString()}</p>
                         <p><strong>Last Login:</strong> ${user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'}</p>
@@ -1064,7 +1300,7 @@
                                         <td><small>${t.description || '-'}</small></td>
                                     </tr>
                                 `).join('')}
-                                ${transactions.length === 0 ? '<tr><td colspan="4">No transactions</td>' : ''}
+                                ${transactions.length === 0 ? '<tr><td colspan="4">No transactions</td></tr>' : ''}
                             </tbody>
                         </table>
                     </div>
@@ -1083,7 +1319,6 @@
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.style.background = type === 'success' ? '#0066ff' : '#ff6b6b';
-            toast.style.color = '#fff';
             toast.innerHTML = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
@@ -1094,20 +1329,32 @@
             window.location.href = 'index.html';
         }
 
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Event listeners
         document.getElementById('searchUsers')?.addEventListener('input', () => renderUsersTable(currentUsers));
         document.getElementById('filterStatus')?.addEventListener('change', () => renderUsersTable(currentUsers));
 
+        // Auto refresh every 30 seconds
         setInterval(() => {
             if (document.getElementById('dashboardSection').style.display !== 'none') loadDashboardStats();
             if (document.getElementById('usersSection').style.display !== 'none') loadUsers();
             if (document.getElementById('withdrawalsSection').style.display !== 'none') loadWithdrawals();
             if (document.getElementById('transactionsSection').style.display !== 'none') loadTransactions();
+            if (document.getElementById('supportSection').style.display !== 'none') loadSupportTickets();
         }, 30000);
 
+        // Initial load
         loadDashboardStats();
         loadUsers();
         loadWithdrawals();
         loadTransactions();
+        loadSupportTickets();
     </script>
 </body>
 </html>
